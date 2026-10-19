@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>North Star CRM</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#dashboard" aria-label="North Star CRM home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span>North Star <small>CRM</small></span>
+      </a>
+      <p class="nav-heading">WORKSPACE</p>
+      <nav class="main-nav" aria-label="Main menu">
+        <a class="nav-link active" href="#dashboard" data-page="dashboard" aria-current="page"><span aria-hidden="true">⌂</span> Dashboard</a>
+        <a class="nav-link" href="#contacts" data-page="contacts"><span aria-hidden="true">♙</span> Contacts</a>
+        <a class="nav-link" href="#memberships" data-page="memberships"><span aria-hidden="true">▣</span> Memberships</a>
+        <a class="nav-link" href="#donations" data-page="donations"><span aria-hidden="true">♡</span> Donations</a>
+        <a class="nav-link" href="#tasks" data-page="tasks"><span aria-hidden="true">✓</span> Tasks</a>
+        <p class="nav-heading nav-heading-spaced">INSIGHTS</p>
+        <a class="nav-link" href="#reports" data-page="reports"><span aria-hidden="true">▥</span> Reports</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a class="nav-link" href="#settings" data-page="settings"><span aria-hidden="true">⚙</span> Settings</a>
+        <div class="profile">
+          <div class="avatar" aria-hidden="true">NS</div>
+          <div><strong>Workspace</strong><small>CRM starter</small></div>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobile-menu" type="button" aria-expanded="false" aria-controls="sidebar">Menu</button>
+        <p class="breadcrumb">Workspace <span aria-hidden="true">/</span> <strong id="breadcrumb-page">Dashboard</strong></p>
+        <span class="status"><span aria-hidden="true">●</span> Local preview</span>
+      </header>
+      <section class="page-content" aria-live="polite">
+        <div class="welcome-row">
+          <div>
+            <p class="eyebrow">YOUR WORKSPACE</p>
+            <h1 id="page-title">Dashboard</h1>
+            <p class="subtitle" id="page-description">A clear view of your community relationships.</p>
+          </div>
+          <button class="primary-button" id="quick-action" type="button">＋ Add contact</button>
+        </div>
+        <div class="notice" id="notice" role="status" hidden></div>
+        <div class="stats-grid" id="dashboard-stats">
+          <article class="stat-card"><span>Total contacts</span><strong>5</strong><small>Sample records</small></article>
+          <article class="stat-card"><span>Active memberships</span><strong>3</strong><small>Sample records</small></article>
+          <article class="stat-card"><span>Donations this month</span><strong>$1,250</strong><small>Sample total</small></article>
+          <article class="stat-card"><span>Open tasks</span><strong>4</strong><small>Sample tasks</small></article>
+        </div>
+        <section class="panel" id="page-panel">
+          <div class="panel-heading"><div><h2>Quick links</h2><p>Choose a section from the menu to get started.</p></div></div>
+          <div class="quick-links">
+            <a href="#contacts" data-page="contacts"><span>♙</span><strong>Manage contacts</strong><small>View and search people</small></a>
+            <a href="#tasks" data-page="tasks"><span>✓</span><strong>Review tasks</strong><small>Keep next steps moving</small></a>
+            <a href="#reports" data-page="reports"><span>▥</span><strong>View reports</strong><small>See workspace summaries</small></a>
+          </div>
+        </section>
+        <p class="footer-note">CRM 1 starter · Sample data only · Not connected to a database yet</p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
