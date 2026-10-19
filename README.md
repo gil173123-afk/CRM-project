@@ -1,16 +1,34 @@
 # CRM-project
 
-## CRM 1 — Task 1: Eight Screen Sketches
+A small, dependency-free Node.js starter for the CRM 1 Contact Starter assignment.
 
-Planning wireframes are saved in `docs/screens/`:
+## Requirements
+- Node.js 20 or newer
 
-1. `01-dashboard.svg` — dashboard overview
-2. `02-contacts.svg` — searchable contact list
-3. `03-contact-details.svg` — individual contact record
-4. `04-memberships.svg` — membership status and renewal
-5. `05-donations.svg` — donation records
-6. `06-tasks.svg` — task list and completion
-7. `07-reports.svg` — reporting filters and summaries
-8. `08-login-settings.svg` — login and settings concept
+## Run the app
+```sh
+npm start
+```
+Open http://localhost:3000.
 
-These are low-fidelity planning sketches; they document proposed screens and do not imply that every screen is implemented in the current app.
+## Run tests
+```sh
+npm test
+```
+
+## Included features
+- Responsive menu: Dashboard, Contacts, Memberships, Donations, Tasks, Reports, Settings.
+- Five seeded sample contacts in `data/contacts.json`.
+- Contact listing and case-insensitive search across name, organization, email, and phone.
+- Contact creation with server-side rejection of blank names.
+- JSON file persistence for newly added contacts.
+- Automated tests for the home page, five seed contacts, search, blank-name rejection, and saving a valid contact.
+
+The menu's Memberships, Donations, Tasks, Reports, and Settings pages are still placeholders; the completed functional area is Contacts.
+
+## CRM 1 task evidence
+- Eight planning sketches: [docs/screens](docs/screens/01-dashboard.svg)
+- Automated test and keyboard-check instructions: [tests/crm1-tests.md](tests/crm1-tests.md)
+- Build log and improvement notes: [docs/build-log.md](docs/build-log.md)
+
+The test instructions describe checks to perform; manual keyboard use and screenshots still need to be performed and captured by the student.
