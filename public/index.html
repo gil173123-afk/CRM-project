@@ -57,10 +57,25 @@
         </div>
         <section class="panel" id="page-panel">
           <div class="panel-heading"><div><h2>Quick links</h2><p>Choose a section from the menu to get started.</p></div></div>
-          <div class="quick-links">
+          <div class="quick-links" id="quick-links">
             <a href="#contacts" data-page="contacts"><span>♙</span><strong>Manage contacts</strong><small>View and search people</small></a>
             <a href="#tasks" data-page="tasks"><span>✓</span><strong>Review tasks</strong><small>Keep next steps moving</small></a>
             <a href="#reports" data-page="reports"><span>▥</span><strong>View reports</strong><small>See workspace summaries</small></a>
+          </div>
+          <div id="contacts-workspace" hidden>
+            <form id="contact-form" class="contact-form">
+              <h3>Add a contact</h3>
+              <div class="form-grid">
+                <label>Full name <input name="name" autocomplete="name" required maxlength="120"></label>
+                <label>Organization <input name="organization" autocomplete="organization" maxlength="120"></label>
+                <label>Email <input name="email" type="email" autocomplete="email" maxlength="160"></label>
+                <label>Phone <input name="phone" type="tel" autocomplete="tel" maxlength="50"></label>
+                <label class="wide-field">Notes <input name="notes" maxlength="500"></label>
+              </div>
+              <div class="form-actions"><button class="primary-button" type="submit">Save contact</button><span id="form-message" role="status" aria-live="polite"></span></div>
+            </form>
+            <div class="contact-list-heading"><h3>Contacts <span id="contact-count" class="count-pill">0</span></h3><label class="search-label">Search contacts <input id="contact-search" type="search" placeholder="Name, organization, email or phone" autocomplete="off"></label></div>
+            <div class="table-wrap"><table class="contact-table"><thead><tr><th scope="col">Name</th><th scope="col">Organization</th><th scope="col">Email</th><th scope="col">Phone</th></tr></thead><tbody id="contact-rows"><tr><td colspan="4">Loading contacts…</td></tr></tbody></table></div>
           </div>
         </section>
         <p class="footer-note">CRM 1 starter · Sample data only · Not connected to a database yet</p>
