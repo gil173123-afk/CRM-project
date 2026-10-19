@@ -78,3 +78,24 @@ h1 { font-size: clamp(26px, 3vw, 34px); letter-spacing: -1.1px; margin: 0; }
   .quick-links { grid-template-columns: 1fr; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
+.contact-form { padding: 20px 0 25px; border-bottom: 1px solid var(--line); }
+.contact-form h3, .contact-list-heading h3 { margin: 0 0 16px; font-size: 15px; }
+.form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.form-grid label, .search-label { display: grid; gap: 7px; color: #4b586b; font-size: 11px; font-weight: 650; }
+.form-grid input, .search-label input { width: 100%; min-height: 40px; border: 1px solid #cfd7e3; border-radius: 7px; padding: 9px 11px; background: #fff; color: var(--ink); font: inherit; font-size: 12px; }
+.form-grid input:focus, .search-label input:focus { outline: 3px solid #d9e5ff; border-color: #6d91e5; }
+.wide-field { grid-column: 1 / -1; }
+.form-actions { display: flex; align-items: center; gap: 14px; margin-top: 16px; }
+#form-message { color: var(--muted); font-size: 11px; }
+.contact-list-heading { display: flex; align-items: end; justify-content: space-between; gap: 18px; padding: 24px 0 15px; }
+.contact-list-heading h3 { margin: 0; }
+.count-pill { display: inline-block; margin-left: 5px; padding: 3px 7px; border-radius: 20px; background: var(--blue-soft); color: var(--blue); font-size: 10px; }
+.search-label { width: min(100%, 330px); }
+.table-wrap { overflow-x: auto; }
+.contact-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.contact-table th { text-align: left; color: #657186; font-size: 10px; text-transform: uppercase; letter-spacing: .5px; background: #f7f9fc; }
+.contact-table th, .contact-table td { padding: 13px 12px; border-bottom: 1px solid var(--line); }
+.contact-table td { color: #475469; }
+.contact-table td:first-child { color: var(--ink); font-weight: 650; }
+.contact-table .empty-row { text-align: center; color: var(--muted); padding: 25px; }
+@media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .wide-field { grid-column: auto; } .contact-list-heading { align-items: stretch; flex-direction: column; } .search-label { width: 100%; } }
