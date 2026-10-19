@@ -1,0 +1,7 @@
+[
+  {"id":"c1","name":"Alex Morgan","organization":"North Star Community","email":"alex@example.org","phone":"555-0101","notes":"Volunteer coordinator"},
+  {"id":"c2","name":"Jamie Rivera","organization":"Rivera Family Fund","email":"jamie@example.org","phone":"555-0102","notes":"Interested in events"},
+  {"id":"c3","name":"Taylor Chen","organization":"Community Arts Network","email":"taylor@example.org","phone":"555-0103","notes":"Monthly supporter"},
+  {"id":"c4","name":"Jordan Patel","organization":"Patel Consulting","email":"jordan@example.org","phone":"555-0104","notes":"Partnership contact"},
+  {"id":"c5","name":"Casey Brooks","organization":"Neighborhood Food Project","email":"casey@example.org","phone":"555-0105","notes":"Volunteer"}
+]
