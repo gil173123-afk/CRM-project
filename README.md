@@ -1,6 +1,6 @@
 # CRM-project
 
-A small, dependency-free Node.js starter for the CRM 1 Contact Starter assignment.
+A dependency-free Node.js classroom CRM starter for CRM 2.
 
 ## Requirements
 - Node.js 20 or newer
@@ -11,24 +11,29 @@ npm start
 ```
 Open http://localhost:3000.
 
+## Seed classroom data
+```sh
+npm run seed -- contacts households
+```
+This resets `data/contacts.json` and `data/households.json` using `data/crm-classroom-test-data.json`. It overwrites local changes to those files.
+
 ## Run tests
 ```sh
 npm test
 ```
 
-## Included features
-- Responsive menu: Dashboard, Contacts, Memberships, Donations, Tasks, Reports, Settings.
-- Five seeded sample contacts in `data/contacts.json`.
-- Contact listing and case-insensitive search across name, organization, email, and phone.
-- Contact creation with server-side rejection of blank names.
-- JSON file persistence for newly added contacts.
-- Automated tests for the home page, five seed contacts, search, blank-name rejection, and saving a valid contact.
+## Demo logins
+- Admin: `admin` / `admin-demo`
+- Staff: `staff` / `staff-demo`
+- Viewer: `viewer` / `viewer-demo`
 
-The menu's Memberships, Donations, Tasks, Reports, and Settings pages are still placeholders; the completed functional area is Contacts.
+Demo passwords are for local classroom testing only, not production authentication.
 
-## CRM 1 task evidence
-- Eight planning sketches: [docs/screens](docs/screens/01-dashboard.svg)
-- Automated test and keyboard-check instructions: [tests/crm1-tests.md](tests/crm1-tests.md)
-- Build log and improvement notes: [docs/build-log.md](docs/build-log.md)
+## Included CRM 2 work
+- 30 fake contacts, five households, tags, email permission, and archive status.
+- Contact search, tag filtering, edit/cancel, email validation and case-insensitive uniqueness.
+- JSON persistence, server-side role enforcement for contact writes, and audit log entries for contact changes.
+- Demo login/logout and admin-only audit log endpoint.
+- Automated server tests for key API behavior.
 
-The test instructions describe checks to perform; manual keyboard use and screenshots still need to be performed and captured by the student.
+Memberships, donations, tasks, production-grade authentication, full settings management, reliable simulated storage failures, and final evidence capture are not complete. Check `docs/build-log.md` and `tests/crm2-tests.md` for current verification status.
