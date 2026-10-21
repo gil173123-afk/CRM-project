@@ -1,0 +1,462 @@
+{
+  "note": "Fake classroom records. Load only the sections needed for the current build. Map fields to your app. Seed records without creating automatic follow-up tasks; test those rules separately.",
+  "test_date": "2026-10-15",
+  "demo_roles": [
+    {
+      "id": "admin-demo",
+      "role": "admin"
+    },
+    {
+      "id": "staff-demo",
+      "role": "staff"
+    },
+    {
+      "id": "viewer-demo",
+      "role": "viewer",
+      "export_allowed": false
+    }
+  ],
+  "households": [
+    {
+      "id": "H101",
+      "name": "Test household 1",
+      "contact_ids": [
+        "C101",
+        "C102"
+      ]
+    },
+    {
+      "id": "H102",
+      "name": "Test household 2",
+      "contact_ids": [
+        "C103",
+        "C104"
+      ]
+    },
+    {
+      "id": "H103",
+      "name": "Test household 3",
+      "contact_ids": [
+        "C105",
+        "C106"
+      ]
+    },
+    {
+      "id": "H104",
+      "name": "Test household 4",
+      "contact_ids": [
+        "C107",
+        "C108"
+      ]
+    },
+    {
+      "id": "H105",
+      "name": "Test household 5",
+      "contact_ids": [
+        "C109",
+        "C110"
+      ]
+    }
+  ],
+  "contacts": [
+    {
+      "id": "C101",
+      "name": "Alex Rivera",
+      "email": "person101@example.com",
+      "phone": "555-0101",
+      "household_id": "H101",
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C102",
+      "name": "Sam Lee",
+      "email": "person102@example.com",
+      "phone": "555-0102",
+      "household_id": "H101",
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C103",
+      "name": "Jordan Patel",
+      "email": "person103@example.com",
+      "phone": "555-0103",
+      "household_id": "H102",
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C104",
+      "name": "Casey Park",
+      "email": "person104@example.com",
+      "phone": "555-0104",
+      "household_id": "H102",
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C105",
+      "name": "Taylor Kim",
+      "email": "person105@example.com",
+      "phone": "555-0105",
+      "household_id": "H103",
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C106",
+      "name": "Morgan Chen",
+      "email": "person106@example.com",
+      "phone": "555-0106",
+      "household_id": "H103",
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C107",
+      "name": "Avery Ross",
+      "email": "person107@example.com",
+      "phone": "555-0107",
+      "household_id": "H104",
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C108",
+      "name": "Riley Stone",
+      "email": "person108@example.com",
+      "phone": "555-0108",
+      "household_id": "H104",
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C109",
+      "name": "Jamie Cruz",
+      "email": "person109@example.com",
+      "phone": "555-0109",
+      "household_id": "H105",
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C110",
+      "name": "Drew Hall",
+      "email": "person110@example.com",
+      "phone": "555-0110",
+      "household_id": "H105",
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C111",
+      "name": "Alex Rivera 2",
+      "email": "person111@example.com",
+      "phone": "555-0111",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C112",
+      "name": "Sam Lee 2",
+      "email": "person112@example.com",
+      "phone": "555-0112",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C113",
+      "name": "Jordan Patel 2",
+      "email": "person113@example.com",
+      "phone": "555-0113",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C114",
+      "name": "Casey Park 2",
+      "email": "person114@example.com",
+      "phone": "555-0114",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C115",
+      "name": "Taylor Kim 2",
+      "email": "person115@example.com",
+      "phone": "555-0115",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C116",
+      "name": "Morgan Chen 2",
+      "email": "person116@example.com",
+      "phone": "555-0116",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C117",
+      "name": "Avery Ross 2",
+      "email": "person117@example.com",
+      "phone": "555-0117",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C118",
+      "name": "Riley Stone 2",
+      "email": "person118@example.com",
+      "phone": "555-0118",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C119",
+      "name": "Jamie Cruz 2",
+      "email": "person119@example.com",
+      "phone": "555-0119",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C120",
+      "name": "Drew Hall 2",
+      "email": "person120@example.com",
+      "phone": "555-0120",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C121",
+      "name": "Alex Rivera 3",
+      "email": "person121@example.com",
+      "phone": "555-0121",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C122",
+      "name": "Sam Lee 3",
+      "email": "person122@example.com",
+      "phone": "555-0122",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C123",
+      "name": "Jordan Patel 3",
+      "email": "person123@example.com",
+      "phone": "555-0123",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C124",
+      "name": "Casey Park 3",
+      "email": "person124@example.com",
+      "phone": "555-0124",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C125",
+      "name": "Taylor Kim 3",
+      "email": "person125@example.com",
+      "phone": "555-0125",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C126",
+      "name": "Morgan Chen 3",
+      "email": "person126@example.com",
+      "phone": "555-0126",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C127",
+      "name": "Avery Ross 3",
+      "email": "person127@example.com",
+      "phone": "555-0127",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C128",
+      "name": "Riley Stone 3",
+      "email": "person128@example.com",
+      "phone": "555-0128",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    },
+    {
+      "id": "C129",
+      "name": "Jamie Cruz 3",
+      "email": "person129@example.com",
+      "phone": "555-0129",
+      "household_id": null,
+      "tags": [
+        "member"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": true,
+      "archived": false
+    },
+    {
+      "id": "C130",
+      "name": "Drew Hall 3",
+      "email": "person130@example.com",
+      "phone": "555-0130",
+      "household_id": null,
+      "tags": [
+        "donor"
+      ],
+      "notes": "Fake classroom contact",
+      "email_opt_in": false,
+      "archived": false
+    }
+  ],
+  "expected_before_changes": {
+    "contacts": 30,
+    "households": 5
+  },
+  "expected_after_archive_c130": {
+    "saved_contact_records": 30,
+    "active_contact_rows": 29,
+    "archived_contact_rows": 1
+  }
+}
