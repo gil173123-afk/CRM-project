@@ -62,8 +62,9 @@ test("creates and edits a contact without changing its ID", async () => withServ
   assert.equal(edited.status,400);
   const saved=await staff.request("/api/contacts/"+contact.id,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:"Changed",email:"morgan@example.com",tags:["donor"],household_id:"H101",email_opt_in:true})});
   assert.equal(saved.status,200);
-  assert.equal((await saved.json()).contact.id,contact.id);
-  assert.equal((await saved.json()).contact.name,"Changed");
+  const savedBody=await saved.json();
+  assert.equal(savedBody.contact.id,contact.id);
+  assert.equal(savedBody.contact.name,"Changed");
 }));
 
 test("viewer can read but cannot create contacts", async () => withServer(async ({login}) => {
