@@ -10,12 +10,14 @@ async function withServer(run) {
   const dataFile = path.join(folder, "contacts.json");
   const householdsFile = path.join(folder, "households.json");
   const auditFile = path.join(folder, "audit-log.json");
+  const usersFile = path.join(folder, "users.json");
+  const settingsFile = path.join(folder, "settings.json");
   fs.writeFileSync(dataFile, JSON.stringify([
     {id:"C101",name:"Alex Rivera",email:"person101@example.com",phone:"555-0101",tags:["member"],household_id:"H101",email_opt_in:true,archived:false},
     {id:"C102",name:"Sam Lee",email:"person102@example.com",phone:"555-0102",tags:["donor"],household_id:"H101",email_opt_in:false,archived:false}
   ]));
   fs.writeFileSync(householdsFile, JSON.stringify([{id:"H101",name:"Test household 1",contact_ids:["C101","C102"]}]));
-  const server = createServer({ dataFile, householdsFile, auditFile, sessions: new Map() });
+  const server = createServer({ dataFile, householdsFile, auditFile, usersFile, settingsFile, sessions: new Map() });
   await new Promise(resolve => server.listen(0, "127.0.0.1", resolve));
   const base = "http://127.0.0.1:" + server.address().port;
   async function login(username, password) {
@@ -24,7 +26,7 @@ async function withServer(run) {
     const cookie = response.headers.get("set-cookie").split(";")[0];
     return { cookie, request:(url, options={})=>fetch(base+url,{...options,headers:{...(options.headers||{}),Cookie:cookie}}) };
   }
-  try { await run({base,login,dataFile,auditFile}); }
+  try { await run({base,login,dataFile,auditFile,usersFile,settingsFile}); }
   finally {
     await new Promise((resolve,reject)=>server.close(error=>error?reject(error):resolve()));
     fs.rmSync(folder,{recursive:true,force:true});
@@ -119,4 +121,32 @@ test("failed validation leaves stored contact data unchanged", async () => withS
   const response=await staff.request("/api/contacts/C101",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:"Changed",email:"person102@example.com"})});
   assert.equal(response.status,400);
   assert.equal(fs.readFileSync(dataFile,"utf8"),before);
+}));
+
+test("seed fixture has 30 contacts and five households with two linked people each", async () => {
+  const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "data", "crm-classroom-test-data.json"), "utf8"));
+  assert.equal(fixture.contacts.length, 30);
+  assert.equal(fixture.households.length, 5);
+  for (const household of fixture.households) assert.ok(household.contact_ids.length >= 2);
+  assert.ok(fixture.contacts.some(contact => contact.id === "C130"));
+});
+
+test("admin-created user can log in and duplicate usernames are rejected", async () => withServer(async ({login}) => {
+  const admin = await login("admin", "admin-demo");
+  const body = {username:"new-staff", password:"classroom-pass", role:"staff"};
+  const created = await admin.request("/api/admin/users", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
+  assert.equal(created.status, 201);
+  const duplicate = await admin.request("/api/admin/users", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({...body,username:"NEW-STAFF"})});
+  assert.equal(duplicate.status, 400);
+}));
+
+test("settings default email permission applies only when field is omitted", async () => withServer(async ({login}) => {
+  const admin = await login("admin", "admin-demo");
+  const save = await admin.request("/api/settings", {method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({organization_name:"Test CRM",default_email_opt_in:true})});
+  assert.equal(save.status, 200);
+  const staff = await login("staff", "staff-demo");
+  const inherited = await staff.request("/api/contacts", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:"Inherited Permission"})});
+  assert.equal((await inherited.json()).contact.email_opt_in, true);
+  const explicitNo = await staff.request("/api/contacts", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:"No Permission",email_opt_in:false})});
+  assert.equal((await explicitNo.json()).contact.email_opt_in, false);
 }));
