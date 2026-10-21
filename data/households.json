@@ -1,0 +1,42 @@
+[
+  {
+    "id": "H101",
+    "name": "Test household 1",
+    "contact_ids": [
+      "C101",
+      "C102"
+    ]
+  },
+  {
+    "id": "H102",
+    "name": "Test household 2",
+    "contact_ids": [
+      "C103",
+      "C104"
+    ]
+  },
+  {
+    "id": "H103",
+    "name": "Test household 3",
+    "contact_ids": [
+      "C105",
+      "C106"
+    ]
+  },
+  {
+    "id": "H104",
+    "name": "Test household 4",
+    "contact_ids": [
+      "C107",
+      "C108"
+    ]
+  },
+  {
+    "id": "H105",
+    "name": "Test household 5",
+    "contact_ids": [
+      "C109",
+      "C110"
+    ]
+  }
+]
