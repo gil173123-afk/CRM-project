@@ -38,5 +38,15 @@ These are classroom demo credentials, not production security. Custom user passw
 - Admin-only user management, workspace settings and audit-log access.
 - JSON persistence and automated tests for validation, permissions, archive/audit behavior, admin APIs and fixture counts.
 
+## Role permissions
+
+| Capability | Admin | Staff | Viewer |
+|---|---|---|---|
+| Read contacts | Yes | Yes | Yes |
+| Create, edit and archive contacts | Yes | Yes | No (server rejects writes) |
+| Manage users | Yes | No | No |
+| Change workspace settings | Yes | No | No |
+| Read audit log | Yes | No | No |
+
 ## Evidence
 See `docs/build-log.md`, `tests/crm2-tests.md`, and `tests/crm2-test-output.txt`. Do not mark browser-only checks or demo-video evidence complete until actually performed.
