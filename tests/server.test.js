@@ -150,3 +150,54 @@ test("settings default email permission applies only when field is omitted", asy
   const explicitNo = await staff.request("/api/contacts", {method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:"No Permission",email_opt_in:false})});
   assert.equal((await explicitNo.json()).contact.email_opt_in, false);
 }));
+
+test("archives classroom contact C130 while retaining all 30 records", async () => {
+  const folder = fs.mkdtempSync(path.join(os.tmpdir(), "crm2-c130-"));
+  const fixture = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "data", "crm-classroom-test-data.json"), "utf8"));
+  const dataFile = path.join(folder, "contacts.json"), householdsFile = path.join(folder, "households.json"), auditFile = path.join(folder, "audit.json"), usersFile = path.join(folder, "users.json"), settingsFile = path.join(folder, "settings.json");
+  fs.writeFileSync(dataFile, JSON.stringify(fixture.contacts));
+  fs.writeFileSync(householdsFile, JSON.stringify(fixture.households));
+  const server = createServer({dataFile,householdsFile,auditFile,usersFile,settingsFile,sessions:new Map()});
+  await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
+  const base="http://127.0.0.1:"+server.address().port;
+  try {
+    const loginResponse=await fetch(base+"/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"staff",password:"staff-demo"})});
+    const cookie=loginResponse.headers.get("set-cookie").split(";")[0];
+    const archived=await fetch(base+"/api/contacts/C130/archive",{method:"POST",headers:{Cookie:cookie}});
+    assert.equal(archived.status,200);
+    const active=await (await fetch(base+"/api/contacts")).json();
+    const archivedList=await (await fetch(base+"/api/contacts?archived=true")).json();
+    assert.equal(active.contacts.length,29);
+    assert.equal(archivedList.contacts.length,1);
+    assert.equal(archivedList.contacts[0].id,"C130");
+    assert.equal(archivedList.contacts[0].notes,"Fake classroom contact");
+  } finally {
+    await new Promise(resolve=>server.close(resolve));
+    fs.rmSync(folder,{recursive:true,force:true});
+  }
+});
+
+test("saved contacts persist when the server restarts without reseeding", async () => {
+  const folder=fs.mkdtempSync(path.join(os.tmpdir(),"crm2-restart-"));
+  const dataFile=path.join(folder,"contacts.json"),householdsFile=path.join(folder,"households.json"),auditFile=path.join(folder,"audit.json"),usersFile=path.join(folder,"users.json"),settingsFile=path.join(folder,"settings.json");
+  fs.writeFileSync(dataFile,JSON.stringify([{id:"C1",name:"Before restart",email:"",tags:[],archived:false}]));
+  fs.writeFileSync(householdsFile,"[]");
+  let server=createServer({dataFile,householdsFile,auditFile,usersFile,settingsFile,sessions:new Map()});
+  const listen=async()=>{await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));return "http://127.0.0.1:"+server.address().port;};
+  try {
+    const base=await listen();
+    const loginResponse=await fetch(base+"/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"staff",password:"staff-demo"})});
+    const cookie=loginResponse.headers.get("set-cookie").split(";")[0];
+    const created=await fetch(base+"/api/contacts",{method:"POST",headers:{"Content-Type":"application/json",Cookie:cookie},body:JSON.stringify({name:"Persists after restart"})});
+    assert.equal(created.status,201);
+    await new Promise(resolve=>server.close(resolve));
+    server=createServer({dataFile,householdsFile,auditFile,usersFile,settingsFile,sessions:new Map()});
+    const restarted=await listen();
+    const contacts=(await (await fetch(restarted+"/api/contacts?q=Persists%20after%20restart")).json()).contacts;
+    assert.equal(contacts.length,1);
+    assert.equal(contacts[0].name,"Persists after restart");
+  } finally {
+    if(server.listening) await new Promise(resolve=>server.close(resolve));
+    fs.rmSync(folder,{recursive:true,force:true});
+  }
+});
