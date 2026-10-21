@@ -77,6 +77,24 @@
             <div class="contact-list-heading"><h3>Contacts <span id="contact-count" class="count-pill">0</span></h3><div class="filters"><label class="search-label">Search contacts <input id="contact-search" type="search" placeholder="Name, ID, organization, email or phone" autocomplete="off"></label><label class="search-label">Filter by tag <select id="tag-filter"><option value="">All tags</option><option value="member">member</option><option value="donor">donor</option></select></label><label class="checkbox-label"><input id="show-archived" type="checkbox"> Show archived</label></div></div>
             <div class="table-wrap"><table class="contact-table"><thead><tr><th scope="col">Name</th><th scope="col">Organization</th><th scope="col">Email</th><th scope="col">Phone</th><th scope="col">Tags</th><th scope="col">Household</th><th scope="col">Actions</th></tr></thead><tbody id="contact-rows"><tr><td colspan="7">Loading contacts…</td></tr></tbody></table></div>
           </div>
+          <div id="admin-workspace" hidden>
+            <section class="contact-form"><h3>Workspace settings (admin only)</h3>
+              <form id="settings-form" class="form-grid">
+                <label>Organization name <input name="organization_name" maxlength="120" required></label>
+                <label class="checkbox-label"><input name="default_email_opt_in" type="checkbox"> Default permission to email for new contacts</label>
+                <div class="form-actions wide-field"><button class="primary-button" type="submit">Save settings</button><span id="settings-message" role="status"></span></div>
+              </form>
+            </section>
+            <section class="contact-form"><h3>Manage users</h3>
+              <form id="user-form" class="form-grid">
+                <label>Username <input name="username" minlength="3" maxlength="32" required></label>
+                <label>Password (8+ characters) <input name="password" type="password" minlength="8" required></label>
+                <label>Role <select name="role"><option value="staff">Staff</option><option value="viewer">Viewer</option><option value="admin">Admin</option></select></label>
+                <div class="form-actions"><button class="primary-button" type="submit">Create user</button><span id="user-message" role="status"></span></div>
+              </form>
+              <div class="table-wrap"><table class="contact-table"><thead><tr><th>Username</th><th>Role</th><th>Type</th><th>Action</th></tr></thead><tbody id="user-rows"></tbody></table></div>
+            </section>
+          </div>
         </section>
         <p class="footer-note">CRM 2 classroom build · Fake test data only · JSON file persistence</p>
       </section>
