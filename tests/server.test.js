@@ -97,3 +97,26 @@ test("households endpoint returns seeded household data", async () => withServer
   const data=await (await fetch(base+"/api/households")).json();
   assert.equal(data.households[0].id,"H101");
 }));
+
+test("admin can create users and save settings; staff cannot manage either", async () => withServer(async ({login,base}) => {
+  const staff=await login("staff","staff-demo");
+  assert.equal((await staff.request("/api/admin/users")).status,403);
+  assert.equal((await staff.request("/api/settings")).status,403);
+  const admin=await login("admin","admin-demo");
+  const created=await admin.request("/api/admin/users",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"new-viewer",password:"classroom-pass",role:"viewer"})});
+  assert.equal(created.status,201);
+  const users=(await (await admin.request("/api/admin/users")).json()).users;
+  assert.ok(users.some(u=>u.username==="new-viewer"&&u.role==="viewer"));
+  const saved=await admin.request("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({organization_name:"Classroom CRM",default_email_opt_in:false})});
+  assert.equal(saved.status,200);
+  const settings=await (await admin.request("/api/settings")).json();
+  assert.equal(settings.settings.organization_name,"Classroom CRM");
+}));
+
+test("failed validation leaves stored contact data unchanged", async () => withServer(async ({login,dataFile}) => {
+  const staff=await login("staff","staff-demo");
+  const before=fs.readFileSync(dataFile,"utf8");
+  const response=await staff.request("/api/contacts/C101",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({name:"Changed",email:"person102@example.com"})});
+  assert.equal(response.status,400);
+  assert.equal(fs.readFileSync(dataFile,"utf8"),before);
+}));
