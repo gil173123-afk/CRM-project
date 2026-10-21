@@ -91,7 +91,7 @@ function createServer(options = {}) {
         const found = users.find(u => u.username === cleanString(body.username) && u.password === body.password && !u.disabled);
         if (!found) return sendJson(res, 401, { error: "Invalid username or password." });
         const token = crypto.randomBytes(24).toString("hex");
-        const user = { id: found.id, username: found.username, role: found.role };
+        const user = { id: found.id, username: found.username, role: found.role, default_email_opt_in: Boolean(readArray(settingsFile)[0]?.default_email_opt_in) };
         userSessions.set(token, user);
         return sendJson(res, 200, { user }, { "Set-Cookie": "crm_session=" + token + "; HttpOnly; SameSite=Strict; Path=/" });
       }
@@ -102,7 +102,7 @@ function createServer(options = {}) {
       }
       if (url.pathname === "/api/me" && req.method === "GET") {
         const user = currentUser(req);
-        return sendJson(res, 200, { user: user || null });
+        return sendJson(res, 200, { user: user ? { ...user, default_email_opt_in: Boolean(readArray(settingsFile)[0]?.default_email_opt_in) } : null });
       }
       if (url.pathname === "/api/contacts" && req.method === "GET") {
         const query = (url.searchParams.get("q") || "").trim().toLowerCase();
