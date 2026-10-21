@@ -1,0 +1,23 @@
+name: CRM 2 tests
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Run automated tests
+        run: npm test
+      - name: Check seed fixture counts
+        run: |
+          node -e "const d=require('./data/crm-classroom-test-data.json'); if(d.contacts.length!==30||d.households.length!==5) process.exit(1); console.log('Fixture check passed: 30 contacts, 5 households')"
