@@ -139,7 +139,7 @@ function createServer(options = {}) {
           notes: cleanString(body.notes),
           tags: Array.isArray(body.tags) ? [...new Set(body.tags.map(cleanString).filter(Boolean))] : [],
           household_id: valid.householdId,
-          email_opt_in: body.email_opt_in === true || body.email_opt_in === "true",
+          email_opt_in: body.email_opt_in === true || body.email_opt_in === "true" || (body.email_opt_in === undefined && Boolean(readArray(settingsFile)[0]?.default_email_opt_in)),
           archived: false
         };
         if (contacts.some(c => c.id === contact.id)) return sendJson(res, 400, { error: "That contact ID already exists." });
@@ -184,10 +184,47 @@ function createServer(options = {}) {
         audit(user, id, "edit");
         return sendJson(res, 200, { contact: contacts[index] });
       }
-      if (url.pathname === "/api/settings" && req.method !== "GET") {
+      if (url.pathname === "/api/admin/users" && req.method === "GET") {
         const user = requireUser(req, res); if (!user) return;
         if (!requireRole(user, ["admin"], res)) return;
-        return sendJson(res, 501, { error: "Settings updates are not implemented yet." });
+        const users = [...DEMO_USERS.map(({ id, username, role }) => ({ id, username, role, protected: true })), ...readArray(usersFile).map(({ id, username, role, disabled }) => ({ id, username, role, disabled: Boolean(disabled), protected: false }))];
+        return sendJson(res, 200, { users });
+      }
+      if (url.pathname === "/api/admin/users" && req.method === "POST") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin"], res)) return;
+        const body = await readBody(req), username = cleanString(body.username), password = typeof body.password === "string" ? body.password : "", role = cleanString(body.role);
+        if (!/^[a-zA-Z0-9_-]{3,32}$/.test(username)) return sendJson(res, 400, { error: "Username must be 3–32 letters, numbers, underscores or hyphens." });
+        if (password.length < 8) return sendJson(res, 400, { error: "Password must contain at least 8 characters." });
+        if (!["admin", "staff", "viewer"].includes(role)) return sendJson(res, 400, { error: "Choose admin, staff, or viewer." });
+        const users = readArray(usersFile);
+        if ([...DEMO_USERS, ...users].some(existing => existing.username.toLowerCase() === username.toLowerCase())) return sendJson(res, 400, { error: "That username already exists." });
+        const created = { id: "user-" + crypto.randomUUID(), username, password, role, disabled: false };
+        users.push(created); writeArray(usersFile, users); audit(user, created.id, "create-user");
+        return sendJson(res, 201, { user: { id: created.id, username: created.username, role: created.role } });
+      }
+      if (url.pathname.startsWith("/api/admin/users/") && req.method === "DELETE") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin"], res)) return;
+        const id = decodeURIComponent(url.pathname.slice("/api/admin/users/".length)), users = readArray(usersFile), index = users.findIndex(existing => existing.id === id);
+        if (index < 0) return sendJson(res, 404, { error: "User not found or demo account is protected." });
+        if (users[index].id === user.id) return sendJson(res, 400, { error: "You cannot delete your own account while signed in." });
+        users.splice(index, 1); writeArray(usersFile, users); audit(user, id, "delete-user");
+        return sendJson(res, 200, { ok: true });
+      }
+      if (url.pathname === "/api/settings" && req.method === "GET") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin"], res)) return;
+        return sendJson(res, 200, { settings: readArray(settingsFile)[0] || { organization_name: "North Star CRM", default_email_opt_in: false } });
+      }
+      if (url.pathname === "/api/settings" && req.method === "PUT") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin"], res)) return;
+        const body = await readBody(req), organization_name = cleanString(body.organization_name);
+        if (!organization_name) return sendJson(res, 400, { error: "Organization name is required." });
+        const settings = { organization_name: organization_name.slice(0, 120), default_email_opt_in: body.default_email_opt_in === true };
+        writeArray(settingsFile, [settings]); audit(user, "settings", "update-settings");
+        return sendJson(res, 200, { settings });
       }
       if (req.method !== "GET" && req.method !== "HEAD") return sendJson(res, 405, { error: "Method not allowed." });
       const requested = url.pathname === "/" ? "/index.html" : url.pathname;
