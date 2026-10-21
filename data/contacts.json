@@ -416,7 +416,7 @@
     ],
     "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false,
+    "archived": true,
     "organization": ""
   }
 ]
