@@ -1,7 +1,422 @@
 [
-  {"id":"c1","name":"Alex Morgan","organization":"North Star Community","email":"alex@example.org","phone":"555-0101","notes":"Volunteer coordinator"},
-  {"id":"c2","name":"Jamie Rivera","organization":"Rivera Family Fund","email":"jamie@example.org","phone":"555-0102","notes":"Interested in events"},
-  {"id":"c3","name":"Taylor Chen","organization":"Community Arts Network","email":"taylor@example.org","phone":"555-0103","notes":"Monthly supporter"},
-  {"id":"c4","name":"Jordan Patel","organization":"Patel Consulting","email":"jordan@example.org","phone":"555-0104","notes":"Partnership contact"},
-  {"id":"c5","name":"Casey Brooks","organization":"Neighborhood Food Project","email":"casey@example.org","phone":"555-0105","notes":"Volunteer"}
+  {
+    "id": "C101",
+    "name": "Alex Rivera",
+    "email": "person101@example.com",
+    "phone": "555-0101",
+    "household_id": "H101",
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C102",
+    "name": "Sam Lee",
+    "email": "person102@example.com",
+    "phone": "555-0102",
+    "household_id": "H101",
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C103",
+    "name": "Jordan Patel",
+    "email": "person103@example.com",
+    "phone": "555-0103",
+    "household_id": "H102",
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C104",
+    "name": "Casey Park",
+    "email": "person104@example.com",
+    "phone": "555-0104",
+    "household_id": "H102",
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C105",
+    "name": "Taylor Kim",
+    "email": "person105@example.com",
+    "phone": "555-0105",
+    "household_id": "H103",
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C106",
+    "name": "Morgan Chen",
+    "email": "person106@example.com",
+    "phone": "555-0106",
+    "household_id": "H103",
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C107",
+    "name": "Avery Ross",
+    "email": "person107@example.com",
+    "phone": "555-0107",
+    "household_id": "H104",
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C108",
+    "name": "Riley Stone",
+    "email": "person108@example.com",
+    "phone": "555-0108",
+    "household_id": "H104",
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C109",
+    "name": "Jamie Cruz",
+    "email": "person109@example.com",
+    "phone": "555-0109",
+    "household_id": "H105",
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C110",
+    "name": "Drew Hall",
+    "email": "person110@example.com",
+    "phone": "555-0110",
+    "household_id": "H105",
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C111",
+    "name": "Alex Rivera 2",
+    "email": "person111@example.com",
+    "phone": "555-0111",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C112",
+    "name": "Sam Lee 2",
+    "email": "person112@example.com",
+    "phone": "555-0112",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C113",
+    "name": "Jordan Patel 2",
+    "email": "person113@example.com",
+    "phone": "555-0113",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C114",
+    "name": "Casey Park 2",
+    "email": "person114@example.com",
+    "phone": "555-0114",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C115",
+    "name": "Taylor Kim 2",
+    "email": "person115@example.com",
+    "phone": "555-0115",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C116",
+    "name": "Morgan Chen 2",
+    "email": "person116@example.com",
+    "phone": "555-0116",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C117",
+    "name": "Avery Ross 2",
+    "email": "person117@example.com",
+    "phone": "555-0117",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C118",
+    "name": "Riley Stone 2",
+    "email": "person118@example.com",
+    "phone": "555-0118",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C119",
+    "name": "Jamie Cruz 2",
+    "email": "person119@example.com",
+    "phone": "555-0119",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C120",
+    "name": "Drew Hall 2",
+    "email": "person120@example.com",
+    "phone": "555-0120",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C121",
+    "name": "Alex Rivera 3",
+    "email": "person121@example.com",
+    "phone": "555-0121",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C122",
+    "name": "Sam Lee 3",
+    "email": "person122@example.com",
+    "phone": "555-0122",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C123",
+    "name": "Jordan Patel 3",
+    "email": "person123@example.com",
+    "phone": "555-0123",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C124",
+    "name": "Casey Park 3",
+    "email": "person124@example.com",
+    "phone": "555-0124",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C125",
+    "name": "Taylor Kim 3",
+    "email": "person125@example.com",
+    "phone": "555-0125",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C126",
+    "name": "Morgan Chen 3",
+    "email": "person126@example.com",
+    "phone": "555-0126",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C127",
+    "name": "Avery Ross 3",
+    "email": "person127@example.com",
+    "phone": "555-0127",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C128",
+    "name": "Riley Stone 3",
+    "email": "person128@example.com",
+    "phone": "555-0128",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C129",
+    "name": "Jamie Cruz 3",
+    "email": "person129@example.com",
+    "phone": "555-0129",
+    "household_id": null,
+    "tags": [
+      "member"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": true,
+    "archived": false,
+    "organization": ""
+  },
+  {
+    "id": "C130",
+    "name": "Drew Hall 3",
+    "email": "person130@example.com",
+    "phone": "555-0130",
+    "household_id": null,
+    "tags": [
+      "donor"
+    ],
+    "notes": "Fake classroom contact",
+    "email_opt_in": false,
+    "archived": false,
+    "organization": ""
+  }
 ]

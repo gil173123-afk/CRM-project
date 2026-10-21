@@ -1,156 +1,40 @@
 const pageContent = {
-  dashboard: { title: "Dashboard", description: "A clear view of your community relationships.", action: "＋ Add contact", showStats: true, heading: "Quick links", detail: "Choose a section from the menu to get started." },
-  contacts: { title: "Contacts", description: "Find people and keep their information organized.", action: "＋ Add contact", heading: "Contact workspace", detail: "Create, search, and review contact records." },
-  memberships: { title: "Memberships", description: "Review membership status and renewals.", action: "＋ Add membership", heading: "Membership workspace", detail: "Membership records are a future extension." },
-  donations: { title: "Donations", description: "Keep donation records organized.", action: "＋ Add donation", heading: "Donation workspace", detail: "Donation records are a future extension." },
-  tasks: { title: "Tasks", description: "Track follow-ups and next steps.", action: "＋ Add task", heading: "Task workspace", detail: "Task tracking is a future extension." },
-  reports: { title: "Reports", description: "Review summaries from your workspace.", action: "Run report", heading: "Reports workspace", detail: "Reports are a future extension." },
-  settings: { title: "Settings", description: "Manage preferences for this workspace.", action: "Save settings", heading: "Workspace settings", detail: "Settings are a future extension." }
+ dashboard:{title:"Dashboard",description:"A clear view of your community relationships.",action:"＋ Add contact",showStats:true,heading:"Quick links",detail:"Choose a section from the menu to get started."},
+ contacts:{title:"Contacts",description:"Find people and keep their information organized.",action:"＋ Add contact",heading:"Contact workspace",detail:"Create, edit, search, tag, and archive contact records."},
+ memberships:{title:"Memberships",description:"Review membership status and renewals.",action:"＋ Add membership",heading:"Membership workspace",detail:"Membership records are not part of this contact-focused build."},
+ donations:{title:"Donations",description:"Keep donation records organized.",action:"＋ Add donation",heading:"Donation workspace",detail:"Donation records are not part of this contact-focused build."},
+ tasks:{title:"Tasks",description:"Track follow-ups and next steps.",action:"＋ Add task",heading:"Task workspace",detail:"Task tracking is not part of this contact-focused build."},
+ reports:{title:"Reports",description:"Review summaries from your workspace.",action:"Run report",heading:"Reports workspace",detail:"Reports are a future extension."},
+ settings:{title:"Settings",description:"Manage preferences for this workspace.",action:"Save settings",heading:"Workspace settings",detail:"Only admins may manage settings."}
 };
-const navLinks = [...document.querySelectorAll("[data-page]")];
-const sidebar = document.querySelector(".sidebar");
-const mobileMenu = document.querySelector("#mobile-menu");
-const pageTitle = document.querySelector("#page-title");
-const pageDescription = document.querySelector("#page-description");
-const breadcrumbPage = document.querySelector("#breadcrumb-page");
-const quickAction = document.querySelector("#quick-action");
-const panel = document.querySelector("#page-panel");
-const stats = document.querySelector("#dashboard-stats");
-const notice = document.querySelector("#notice");
-const quickLinks = document.querySelector("#quick-links");
-const contactsWorkspace = document.querySelector("#contacts-workspace");
-const contactForm = document.querySelector("#contact-form");
-const contactSearch = document.querySelector("#contact-search");
-const contactRows = document.querySelector("#contact-rows");
-const contactCount = document.querySelector("#contact-count");
-const formMessage = document.querySelector("#form-message");
-let currentPage = "dashboard";
-let searchRequest = 0;
-
-function safeCell(value) {
-  const td = document.createElement("td");
-  td.textContent = value || "—";
-  return td;
+const navLinks=[...document.querySelectorAll("[data-page]")],sidebar=document.querySelector(".sidebar"),mobileMenu=document.querySelector("#mobile-menu"),pageTitle=document.querySelector("#page-title"),pageDescription=document.querySelector("#page-description"),breadcrumbPage=document.querySelector("#breadcrumb-page"),quickAction=document.querySelector("#quick-action"),panel=document.querySelector("#page-panel"),stats=document.querySelector("#dashboard-stats"),notice=document.querySelector("#notice"),quickLinks=document.querySelector("#quick-links"),contactsWorkspace=document.querySelector("#contacts-workspace"),contactForm=document.querySelector("#contact-form"),contactSearch=document.querySelector("#contact-search"),contactRows=document.querySelector("#contact-rows"),contactCount=document.querySelector("#contact-count"),formMessage=document.querySelector("#form-message"),loginForm=document.querySelector("#login-form"),loginToggle=document.querySelector("#login-toggle"),logoutButton=document.querySelector("#logout-button"),signedInAs=document.querySelector("#signed-in-as"),tagFilter=document.querySelector("#tag-filter"),showArchived=document.querySelector("#show-archived"),householdSelect=document.querySelector("#household-select"),cancelEdit=document.querySelector("#cancel-edit"),adminWorkspace=document.querySelector("#admin-workspace"),settingsForm=document.querySelector("#settings-form"),userForm=document.querySelector("#user-form"),userRows=document.querySelector("#user-rows");
+let currentPage="dashboard",searchRequest=0,editingId=null,currentUser=null,households=[];
+function el(tag,text){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;}
+function safeCell(value){return el("td",value||"—");}
+function announce(message){notice.textContent=message;notice.hidden=false;}
+function resetContactForm(){editingId=null;contactForm.reset();contactForm.elements.email_opt_in.checked=false;document.querySelector("#contact-form-title").textContent="Add a contact";contactForm.querySelector('button[type="submit"]').textContent="Save contact";cancelEdit.hidden=true;formMessage.textContent="";}
+function canWrite(){return currentUser&&["admin","staff"].includes(currentUser.role);}
+function updateAuthUI(){signedInAs.textContent=currentUser?currentUser.username+" · "+currentUser.role:"Not signed in";loginToggle.hidden=Boolean(currentUser);logoutButton.hidden=!currentUser;contactForm.querySelectorAll("input,select,button").forEach(control=>{if(control.id!=="cancel-edit")control.disabled=!canWrite();});quickAction.disabled=(currentPage==="contacts"&&!canWrite())||(currentPage==="settings"&&(!currentUser||currentUser.role!=="admin"));if(adminWorkspace)adminWorkspace.hidden=currentPage!=="settings"||!currentUser||currentUser.role!=="admin";}
+function drawContacts(contacts){
+ contactRows.replaceChildren();contactCount.textContent=String(contacts.length);
+ if(!contacts.length){const row=el("tr"),cell=el("td","No matching contacts. Try another search or add a contact.");cell.colSpan=7;cell.className="empty-row";row.append(cell);contactRows.append(row);return;}
+ for(const contact of contacts){const row=el("tr");row.append(safeCell(contact.name),safeCell(contact.organization),safeCell(contact.email),safeCell(contact.phone),safeCell((contact.tags||[]).join(", ")),safeCell(households.find(h=>h.id===contact.household_id)?.name||"—"));const actions=el("td");const edit=el("button","Edit");edit.type="button";edit.className="secondary-button";edit.disabled=!canWrite()||Boolean(contact.archived);edit.addEventListener("click",()=>beginEdit(contact));actions.append(edit);if(!contact.archived){const archive=el("button","Archive");archive.type="button";archive.className="secondary-button";archive.disabled=!canWrite();archive.addEventListener("click",()=>archiveContact(contact));actions.append(archive);}row.append(actions);contactRows.append(row);}
 }
-function drawContacts(contacts) {
-  contactRows.replaceChildren();
-  contactCount.textContent = String(contacts.length);
-  if (!contacts.length) {
-    const row = document.createElement("tr");
-    const cell = document.createElement("td");
-    cell.colSpan = 4;
-    cell.className = "empty-row";
-    cell.textContent = "No matching contacts. Try another search or add a contact.";
-    row.append(cell);
-    contactRows.append(row);
-    return;
-  }
-  for (const contact of contacts) {
-    const row = document.createElement("tr");
-    row.append(safeCell(contact.name), safeCell(contact.organization), safeCell(contact.email), safeCell(contact.phone));
-    contactRows.append(row);
-  }
-}
-async function loadContacts(query = "") {
-  const requestId = ++searchRequest;
-  contactRows.innerHTML = '<tr><td class="empty-row" colspan="4">Loading contacts…</td></tr>';
-  try {
-    const response = await fetch("/api/contacts?q=" + encodeURIComponent(query));
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || "Unable to load contacts.");
-    if (requestId === searchRequest) drawContacts(data.contacts);
-  } catch (error) {
-    if (requestId === searchRequest) {
-      contactRows.replaceChildren();
-      const row = document.createElement("tr");
-      const cell = document.createElement("td");
-      cell.colSpan = 4; cell.className = "empty-row"; cell.textContent = error.message;
-      row.append(cell); contactRows.append(row);
-    }
-  }
-}
-function showPage(pageName) {
-  const page = pageContent[pageName] || pageContent.dashboard;
-  currentPage = pageContent[pageName] ? pageName : "dashboard";
-  pageTitle.textContent = page.title;
-  pageDescription.textContent = page.description;
-  breadcrumbPage.textContent = page.title;
-  quickAction.textContent = page.action;
-  stats.hidden = !page.showStats;
-  panel.querySelector("h2").textContent = page.heading;
-  panel.querySelector(".panel-heading p").textContent = page.detail;
-  quickLinks.hidden = currentPage !== "dashboard";
-  contactsWorkspace.hidden = currentPage !== "contacts";
-  navLinks.forEach(link => {
-    const selected = link.dataset.page === currentPage;
-    if (link.classList.contains("nav-link")) {
-      link.classList.toggle("active", selected);
-      if (selected) link.setAttribute("aria-current", "page");
-      else link.removeAttribute("aria-current");
-    }
-  });
-  notice.hidden = true;
-  sidebar.classList.remove("open");
-  mobileMenu.setAttribute("aria-expanded", "false");
-  if (currentPage === "contacts") loadContacts(contactSearch.value);
-}
-navLinks.forEach(link => {
-  link.addEventListener("click", event => {
-    const pageName = link.dataset.page;
-    if (!pageName) return;
-    event.preventDefault();
-    history.replaceState(null, "", "#" + pageName);
-    showPage(pageName);
-  });
-});
-mobileMenu.addEventListener("click", () => {
-  const isOpen = sidebar.classList.toggle("open");
-  mobileMenu.setAttribute("aria-expanded", String(isOpen));
-});
-quickAction.addEventListener("click", () => {
-  if (currentPage === "contacts") {
-    contactForm.elements.name.focus();
-    return;
-  }
-  if (currentPage === "dashboard") {
-    history.replaceState(null, "", "#contacts");
-    showPage("contacts");
-    contactForm.elements.name.focus();
-    return;
-  }
-  notice.textContent = "This section is planned for a later CRM task. Contact records can be managed in Contacts.";
-  notice.hidden = false;
-});
-contactSearch.addEventListener("input", () => loadContacts(contactSearch.value));
-contactForm.addEventListener("submit", async event => {
-  event.preventDefault();
-  formMessage.textContent = "";
-  const formData = new FormData(contactForm);
-  const body = Object.fromEntries(formData.entries());
-  if (!body.name.trim()) {
-    formMessage.textContent = "Please enter a contact name.";
-    contactForm.elements.name.focus();
-    return;
-  }
-  try {
-    const response = await fetch("/api/contacts", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
-    });
-    const result = await response.json();
-    if (!response.ok) {
-      formMessage.textContent = result.error || "Could not save contact.";
-      if (!body.name.trim()) contactForm.elements.name.focus();
-      return;
-    }
-    contactForm.reset();
-    formMessage.textContent = "Contact saved.";
-    await loadContacts(contactSearch.value);
-    contactForm.elements.name.focus();
-  } catch {
-    formMessage.textContent = "Could not reach the server. Please try again.";
-  }
-});
-const initialPage = window.location.hash.slice(1);
-showPage(pageContent[initialPage] ? initialPage : "dashboard");
+async function loadContacts(){const requestId=++searchRequest;contactRows.replaceChildren();const loading=el("tr"),cell=el("td","Loading contacts…");cell.colSpan=7;loading.append(cell);contactRows.append(loading);try{const query=new URLSearchParams({q:contactSearch.value,tag:tagFilter.value,archived:String(showArchived.checked)});const response=await fetch("/api/contacts?"+query);const data=await response.json();if(!response.ok)throw new Error(data.error||"Unable to load contacts.");if(requestId===searchRequest)drawContacts(data.contacts);}catch(error){if(requestId===searchRequest){const row=el("tr"),cell=el("td",error.message);cell.colSpan=7;row.append(cell);contactRows.replaceChildren(row);}}}
+async function loadHouseholds(){try{const response=await fetch("/api/households"),data=await response.json();households=data.households||[];householdSelect.replaceChildren(new Option("No household",""));for(const h of households)householdSelect.add(new Option(h.name,h.id));}catch{households=[];}}
+function beginEdit(contact){editingId=contact.id;contactForm.elements.name.value=contact.name||"";contactForm.elements.organization.value=contact.organization||"";contactForm.elements.email.value=contact.email||"";contactForm.elements.phone.value=contact.phone||"";contactForm.elements.notes.value=contact.notes||"";contactForm.elements.household_id.value=contact.household_id||"";contactForm.elements.tags_text.value=(contact.tags||[]).join(", ");contactForm.elements.email_opt_in.checked=Boolean(contact.email_opt_in);document.querySelector("#contact-form-title").textContent="Edit contact · "+contact.id;contactForm.querySelector('button[type="submit"]').textContent="Save changes";cancelEdit.hidden=false;formMessage.textContent="Editing "+contact.id+"; the ID will stay the same.";contactForm.elements.name.focus();}
+async function archiveContact(contact){if(!confirm("Archive "+contact.name+"? The saved record and history will be retained."))return;try{const response=await fetch("/api/contacts/"+encodeURIComponent(contact.id)+"/archive",{method:"POST"});const result=await response.json();if(!response.ok)throw new Error(result.error||"Could not archive contact.");announce("Archived "+contact.id+". The record remains saved.");await loadContacts();}catch(error){announce(error.message);}}
+async function loadSettings(){try{const r=await fetch("/api/settings"),d=await r.json();if(!r.ok)throw new Error(d.error||"Could not load settings.");settingsForm.elements.organization_name.value=d.settings.organization_name||"North Star CRM";settingsForm.elements.default_email_opt_in.checked=Boolean(d.settings.default_email_opt_in);}catch(e){document.querySelector("#settings-message").textContent=e.message;}}
+async function loadUsers(){try{const r=await fetch("/api/admin/users"),d=await r.json();if(!r.ok)throw new Error(d.error||"Could not load users.");userRows.replaceChildren();for(const u of d.users){const row=el("tr");row.append(safeCell(u.username),safeCell(u.role),safeCell(u.protected?"Demo account":"Added account"));const cell=el("td");if(!u.protected){const remove=el("button","Delete");remove.type="button";remove.className="secondary-button";remove.addEventListener("click",async()=>{if(!confirm("Delete user "+u.username+"?"))return;const result=await fetch("/api/admin/users/"+encodeURIComponent(u.id),{method:"DELETE"});const body=await result.json();if(!result.ok){document.querySelector("#user-message").textContent=body.error||"Could not delete user.";return;}await loadUsers();});cell.append(remove);}else cell.textContent="Protected";row.append(cell);userRows.append(row);}}catch(e){document.querySelector("#user-message").textContent=e.message;}}
+settingsForm.addEventListener("submit",async event=>{event.preventDefault();const message=document.querySelector("#settings-message");message.textContent="";const body={organization_name:settingsForm.elements.organization_name.value,default_email_opt_in:settingsForm.elements.default_email_opt_in.checked};try{const r=await fetch("/api/settings",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error||"Could not save settings.");message.textContent="Settings saved."; }catch(e){message.textContent=e.message;}});
+userForm.addEventListener("submit",async event=>{event.preventDefault();const message=document.querySelector("#user-message");message.textContent="";const body=Object.fromEntries(new FormData(userForm));try{const r=await fetch("/api/admin/users",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const d=await r.json();if(!r.ok)throw new Error(d.error||"Could not create user.");userForm.reset();message.textContent="User created.";await loadUsers();}catch(e){message.textContent=e.message;}});
+function showPage(pageName){const page=pageContent[pageName]||pageContent.dashboard;currentPage=pageContent[pageName]?pageName:"dashboard";pageTitle.textContent=page.title;pageDescription.textContent=page.description;breadcrumbPage.textContent=page.title;quickAction.textContent=page.action;stats.hidden=!page.showStats;panel.querySelector("h2").textContent=page.heading;panel.querySelector(".panel-heading p").textContent=page.detail;quickLinks.hidden=currentPage!=="dashboard";contactsWorkspace.hidden=currentPage!=="contacts";adminWorkspace.hidden=currentPage!=="settings"||!currentUser||currentUser.role!=="admin";navLinks.forEach(link=>{const selected=link.dataset.page===currentPage;if(link.classList.contains("nav-link")){link.classList.toggle("active",selected);if(selected)link.setAttribute("aria-current","page");else link.removeAttribute("aria-current");}});sidebar.classList.remove("open");mobileMenu.setAttribute("aria-expanded","false");if(currentPage==="contacts")loadContacts();if(currentPage==="settings"&&currentUser?.role==="admin"){loadSettings();loadUsers();}updateAuthUI();}
+navLinks.forEach(link=>link.addEventListener("click",event=>{const name=link.dataset.page;if(!name)return;event.preventDefault();history.replaceState(null,"","#"+name);showPage(name);}));
+mobileMenu.addEventListener("click",()=>{const open=sidebar.classList.toggle("open");mobileMenu.setAttribute("aria-expanded",String(open));});
+quickAction.addEventListener("click",()=>{if(currentPage==="settings"){if(currentUser?.role==="admin")settingsForm.requestSubmit();else announce("Settings are restricted to admin users.");return;}if(currentPage==="contacts"){if(!canWrite()){announce("Log in as admin or staff to change contacts.");return;}resetContactForm();contactForm.elements.name.focus();return;}if(currentPage==="dashboard"){history.replaceState(null,"","#contacts");showPage("contacts");if(canWrite())contactForm.elements.name.focus();return;}announce(currentPage==="settings"?"Settings are restricted to admin users.":"This section is outside the current contact build.");});
+contactSearch.addEventListener("input",loadContacts);tagFilter.addEventListener("change",loadContacts);showArchived.addEventListener("change",loadContacts);cancelEdit.addEventListener("click",resetContactForm);
+loginToggle.addEventListener("click",()=>{loginForm.hidden=!loginForm.hidden;if(!loginForm.hidden)loginForm.elements.username.focus();});
+loginForm.addEventListener("submit",async event=>{event.preventDefault();const message=document.querySelector("#login-message");message.textContent="";try{const response=await fetch("/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(Object.fromEntries(new FormData(loginForm)))});const data=await response.json();if(!response.ok)throw new Error(data.error||"Login failed.");currentUser=data.user;loginForm.reset();loginForm.hidden=true;updateAuthUI();await loadContacts();announce("Signed in as "+currentUser.role+".");}catch(error){message.textContent=error.message;}});
+logoutButton.addEventListener("click",async()=>{await fetch("/api/logout",{method:"POST"});currentUser=null;resetContactForm();updateAuthUI();await loadContacts();announce("You are logged out.");});
+contactForm.addEventListener("submit",async event=>{event.preventDefault();formMessage.textContent="";if(!canWrite()){formMessage.textContent="Log in as admin or staff to save contacts.";return;}const body=Object.fromEntries(new FormData(contactForm));body.tags=(body.tags_text||"").split(",").map(tag=>tag.trim()).filter(Boolean);delete body.tags_text;body.email_opt_in=contactForm.elements.email_opt_in.checked;const id=editingId;try{const response=await fetch(id?"/api/contacts/"+encodeURIComponent(id):"/api/contacts",{method:id?"PUT":"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const result=await response.json();if(!response.ok)throw new Error(result.error||"Could not save contact.");resetContactForm();formMessage.textContent=id?"Contact updated.":"Contact saved.";await loadContacts();contactForm.elements.name.focus();}catch(error){formMessage.textContent=error.message;}});
+(async()=>{await loadHouseholds();try{const response=await fetch("/api/me"),data=await response.json();currentUser=data.user;}catch{currentUser=null;}updateAuthUI();const initial=location.hash.slice(1);showPage(pageContent[initial]?initial:"dashboard");})();

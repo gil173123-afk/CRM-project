@@ -1,0 +1,5 @@
+CRM 2 test execution status
+
+The earlier 8-test CI result belongs to commit a8d34677e1b2b57773eeac36437aeea4a1f6536e and does NOT verify the current branch head.
+
+Current branch changes include additional admin user/settings APIs and tests. No CI run or local execution result has been retrieved for the current branch head yet. Do not treat the latest code as passing until the workflow is run and its output is reviewed.

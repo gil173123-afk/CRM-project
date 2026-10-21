@@ -1,23 +1,32 @@
 # CRM Build Log
 
 ## CRM 1 — Contact Starter
+- Created a responsive workspace shell and contact list/search.
+- Added a Node.js HTTP server and JSON file persistence.
+- Added baseline automated tests.
 
-### Implemented
-- Added a responsive sidebar menu for Dashboard, Contacts, Memberships, Donations, Tasks, Reports, and Settings.
-- Added a Node.js HTTP server and JSON-backed contact API.
-- Added five sample contacts.
-- Added case-insensitive search across contact name, organization, email, and phone.
-- Added server-side validation that rejects blank or whitespace-only contact names.
-- Added automated tests using Node's built-in test runner.
-- Kept the application dependency-free for easier setup.
+## CRM 2 — Contacts and Login (work in progress)
+- Added 30 fake classroom contacts and five household definitions on branch `crm2-classroom-seed`.
+- Added `npm run seed -- contacts` and `npm run seed -- households` to reload the classroom fixtures.
+- Added server-side contact validation: trimmed names, optional but validated email, case-insensitive email uniqueness, duplicate ID rejection, and stable IDs on edits.
+- Added contact edit endpoint, tag filtering, household links, archive endpoint, and an append-only JSON audit log for create/edit/archive events.
+- Added demo login endpoints and role enforcement for contact writes. Viewer writes are rejected by the server; only admin can read the audit log.
+- Added form controls for tags, household, email permission, edit/cancel, archive, and archived filtering.
+- Added tests covering contact validation, edits, viewer restrictions, login requirements, household data, and archive/audit behavior.
 
-### Improvement
-Search is case-insensitive and checks multiple contact fields, rather than requiring an exact name match. Server-side validation also protects the data if a request bypasses the browser form.
-
-### Run locally
+## Run locally
 - Requires Node.js 20 or newer.
+- `npm install` is not required; there are no external dependencies.
+- `npm run seed -- contacts households` reloads both classroom fixture sections. This overwrites the current local contact and household JSON files, so only run it when you intend to reset them.
 - `npm start` starts the server at http://localhost:3000.
-- `npm test` runs the automated tests.
+- `npm test` runs automated tests.
 
-### Evidence still to collect
-Run the tests locally and capture their output. Manually verify keyboard-only operation in a browser and capture a screenshot. Do not mark manual checks complete until they have actually been performed.
+## Demo accounts
+- Admin: username `admin`, password `admin-demo`
+- Staff: username `staff`, password `staff-demo`
+- Viewer: username `viewer`, password `viewer-demo`
+
+These are classroom-only demo credentials and must not be used for a real deployment.
+
+## Remaining verification
+The app changes have been committed to this branch, but runtime tests have not yet been executed in a local Node.js environment. Review the automated CI result before treating the build as passing. Manually verify keyboard-only operation, failed-save behavior, role UI, and persistence after restarting the server. Capture a real demo video and add its link to `tests/crm2-tests.md` before submission.
