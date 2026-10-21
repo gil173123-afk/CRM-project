@@ -99,3 +99,18 @@ h1 { font-size: clamp(26px, 3vw, 34px); letter-spacing: -1.1px; margin: 0; }
 .contact-table td:first-child { color: var(--ink); font-weight: 650; }
 .contact-table .empty-row { text-align: center; color: var(--muted); padding: 25px; }
 @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } .wide-field { grid-column: auto; } .contact-list-heading { align-items: stretch; flex-direction: column; } .search-label { width: 100%; } }
+
+.secondary-button{border:1px solid #cfd7e3;background:#fff;color:#344158;padding:8px 10px;border-radius:7px;font:inherit;font-size:11px;font-weight:650;cursor:pointer;margin-right:5px}
+.secondary-button:hover:not(:disabled){background:#f3f6fb;border-color:#9eafd0}
+button:disabled{opacity:.55;cursor:not-allowed}
+.top-actions{display:flex;align-items:center;gap:10px}
+.contact-form[hidden],#login-form[hidden],#logout-button[hidden],#login-toggle[hidden]{display:none}
+.filters{display:flex;align-items:end;gap:12px;flex-wrap:wrap}
+.filters .search-label{width:min(100%,280px)}
+.checkbox-label{display:flex;align-items:center;gap:8px;color:#4b586b;font-size:11px;font-weight:650;min-height:40px}
+.checkbox-label input{accent-color:var(--blue)}
+#login-form{margin-bottom:20px;padding:18px;border:1px solid var(--line);border-radius:10px;background:#fff}
+#login-form h2{font-size:17px;margin:0 0 10px}
+#login-form p{font-size:12px;color:var(--muted)}
+.contact-table td:last-child{white-space:nowrap}
+@media(max-width:700px){.top-actions{margin-left:auto}.topbar{gap:10px}.filters{align-items:stretch;flex-direction:column}.filters .search-label{width:100%}}
