@@ -7,6 +7,8 @@ const ROOT = __dirname;
 const DEFAULT_DATA_FILE = path.join(ROOT, "data", "contacts.json");
 const DEFAULT_HOUSEHOLDS_FILE = path.join(ROOT, "data", "households.json");
 const DEFAULT_AUDIT_FILE = path.join(ROOT, "data", "audit-log.json");
+const DEFAULT_USERS_FILE = path.join(ROOT, "data", "users.json");
+const DEFAULT_SETTINGS_FILE = path.join(ROOT, "data", "settings.json");
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml" };
 const DEMO_USERS = [
   { id: "admin-demo", username: "admin", password: "admin-demo", role: "admin" },
@@ -59,6 +61,8 @@ function createServer(options = {}) {
   const dataFile = options.dataFile || DEFAULT_DATA_FILE;
   const householdsFile = options.householdsFile || DEFAULT_HOUSEHOLDS_FILE;
   const auditFile = options.auditFile || DEFAULT_AUDIT_FILE;
+  const usersFile = options.usersFile || DEFAULT_USERS_FILE;
+  const settingsFile = options.settingsFile || DEFAULT_SETTINGS_FILE;
   const userSessions = options.sessions || sessions;
   function currentUser(req) {
     const cookie = (req.headers.cookie || "").split(";").map(v => v.trim()).find(v => v.startsWith("crm_session="));
@@ -83,7 +87,8 @@ function createServer(options = {}) {
     try {
       if (url.pathname === "/api/login" && req.method === "POST") {
         const body = await readBody(req);
-        const found = DEMO_USERS.find(u => u.username === cleanString(body.username) && u.password === body.password);
+        const users = [...DEMO_USERS, ...readArray(usersFile)];
+        const found = users.find(u => u.username === cleanString(body.username) && u.password === body.password && !u.disabled);
         if (!found) return sendJson(res, 401, { error: "Invalid username or password." });
         const token = crypto.randomBytes(24).toString("hex");
         const user = { id: found.id, username: found.username, role: found.role };
