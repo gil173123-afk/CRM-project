@@ -2,421 +2,421 @@
   {
     "id": "C101",
     "name": "Alex Rivera",
-    "organization": "",
     "email": "person101@example.com",
     "phone": "555-0101",
-    "notes": "Fake classroom contact",
     "household_id": "H101",
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C102",
     "name": "Sam Lee",
-    "organization": "",
     "email": "person102@example.com",
     "phone": "555-0102",
-    "notes": "Fake classroom contact",
     "household_id": "H101",
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C103",
     "name": "Jordan Patel",
-    "organization": "",
     "email": "person103@example.com",
     "phone": "555-0103",
-    "notes": "Fake classroom contact",
     "household_id": "H102",
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C104",
     "name": "Casey Park",
-    "organization": "",
     "email": "person104@example.com",
     "phone": "555-0104",
-    "notes": "Fake classroom contact",
     "household_id": "H102",
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C105",
     "name": "Taylor Kim",
-    "organization": "",
     "email": "person105@example.com",
     "phone": "555-0105",
-    "notes": "Fake classroom contact",
     "household_id": "H103",
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C106",
     "name": "Morgan Chen",
-    "organization": "",
     "email": "person106@example.com",
     "phone": "555-0106",
-    "notes": "Fake classroom contact",
     "household_id": "H103",
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C107",
     "name": "Avery Ross",
-    "organization": "",
     "email": "person107@example.com",
     "phone": "555-0107",
-    "notes": "Fake classroom contact",
     "household_id": "H104",
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C108",
     "name": "Riley Stone",
-    "organization": "",
     "email": "person108@example.com",
     "phone": "555-0108",
-    "notes": "Fake classroom contact",
     "household_id": "H104",
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C109",
     "name": "Jamie Cruz",
-    "organization": "",
     "email": "person109@example.com",
     "phone": "555-0109",
-    "notes": "Fake classroom contact",
     "household_id": "H105",
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C110",
     "name": "Drew Hall",
-    "organization": "",
     "email": "person110@example.com",
     "phone": "555-0110",
-    "notes": "Fake classroom contact",
     "household_id": "H105",
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C111",
     "name": "Alex Rivera 2",
-    "organization": "",
     "email": "person111@example.com",
     "phone": "555-0111",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C112",
     "name": "Sam Lee 2",
-    "organization": "",
     "email": "person112@example.com",
     "phone": "555-0112",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C113",
     "name": "Jordan Patel 2",
-    "organization": "",
     "email": "person113@example.com",
     "phone": "555-0113",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C114",
     "name": "Casey Park 2",
-    "organization": "",
     "email": "person114@example.com",
     "phone": "555-0114",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C115",
     "name": "Taylor Kim 2",
-    "organization": "",
     "email": "person115@example.com",
     "phone": "555-0115",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C116",
     "name": "Morgan Chen 2",
-    "organization": "",
     "email": "person116@example.com",
     "phone": "555-0116",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C117",
     "name": "Avery Ross 2",
-    "organization": "",
     "email": "person117@example.com",
     "phone": "555-0117",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C118",
     "name": "Riley Stone 2",
-    "organization": "",
     "email": "person118@example.com",
     "phone": "555-0118",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C119",
     "name": "Jamie Cruz 2",
-    "organization": "",
     "email": "person119@example.com",
     "phone": "555-0119",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C120",
     "name": "Drew Hall 2",
-    "organization": "",
     "email": "person120@example.com",
     "phone": "555-0120",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C121",
     "name": "Alex Rivera 3",
-    "organization": "",
     "email": "person121@example.com",
     "phone": "555-0121",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C122",
     "name": "Sam Lee 3",
-    "organization": "",
     "email": "person122@example.com",
     "phone": "555-0122",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C123",
     "name": "Jordan Patel 3",
-    "organization": "",
     "email": "person123@example.com",
     "phone": "555-0123",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C124",
     "name": "Casey Park 3",
-    "organization": "",
     "email": "person124@example.com",
     "phone": "555-0124",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C125",
     "name": "Taylor Kim 3",
-    "organization": "",
     "email": "person125@example.com",
     "phone": "555-0125",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C126",
     "name": "Morgan Chen 3",
-    "organization": "",
     "email": "person126@example.com",
     "phone": "555-0126",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C127",
     "name": "Avery Ross 3",
-    "organization": "",
     "email": "person127@example.com",
     "phone": "555-0127",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C128",
     "name": "Riley Stone 3",
-    "organization": "",
     "email": "person128@example.com",
     "phone": "555-0128",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C129",
     "name": "Jamie Cruz 3",
-    "organization": "",
     "email": "person129@example.com",
     "phone": "555-0129",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "member"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": true,
-    "archived": false
+    "archived": false,
+    "organization": ""
   },
   {
     "id": "C130",
     "name": "Drew Hall 3",
-    "organization": "",
     "email": "person130@example.com",
     "phone": "555-0130",
-    "notes": "Fake classroom contact",
     "household_id": null,
     "tags": [
       "donor"
     ],
+    "notes": "Fake classroom contact",
     "email_opt_in": false,
-    "archived": false
+    "archived": false,
+    "organization": ""
   }
 ]
