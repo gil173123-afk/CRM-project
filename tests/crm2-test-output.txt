@@ -1,5 +1,16 @@
-CRM 2 test execution status
+CRM 2 automated test evidence — current branch status
 
-The earlier 8-test CI result belongs to commit a8d34677e1b2b57773eeac36437aeea4a1f6536e and does NOT verify the current branch head.
+Branch: crm2-rubric-completion
+Latest code commit at time of this note: c4275ea7cfdbb97ee0cf77392a8af64d7c7fd9e4
 
-Current branch changes include additional admin user/settings APIs and tests. No CI run or local execution result has been retrieved for the current branch head yet. Do not treat the latest code as passing until the workflow is run and its output is reviewed.
+The automated suite was expanded to cover:
+- Contact create/edit validation and stable IDs
+- Server-enforced viewer and logged-out write restrictions
+- Admin-only user management and settings
+- Duplicate usernames and configurable email permission defaults
+- C130 archive scenario (30 stored, 29 active, 1 archived)
+- Persistence across a server restart without reseeding
+- Classroom fixture integrity (30 contacts, five households)
+
+Execution status: NOT YET VERIFIED.
+No CI run result is available for the latest branch head, and the current environment cannot reach github.com to clone and execute the tests locally. Do not interpret this file as a passing test transcript. GitHub Actions is configured in .github/workflows/crm2-tests.yml; inspect the latest pull request check before merging.
