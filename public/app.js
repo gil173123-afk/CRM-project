@@ -12,7 +12,7 @@ let currentPage="dashboard",searchRequest=0,editingId=null,currentUser=null,hous
 function el(tag,text){const node=document.createElement(tag);if(text!==undefined)node.textContent=text;return node;}
 function safeCell(value){return el("td",value||"—");}
 function announce(message){notice.textContent=message;notice.hidden=false;}
-function resetContactForm(){editingId=null;contactForm.reset();contactForm.elements.email_opt_in.checked=false;document.querySelector("#contact-form-title").textContent="Add a contact";contactForm.querySelector('button[type="submit"]').textContent="Save contact";cancelEdit.hidden=true;formMessage.textContent="";}
+function resetContactForm(){editingId=null;contactForm.reset();contactForm.elements.email_opt_in.checked=Boolean(currentUser?.default_email_opt_in);document.querySelector("#contact-form-title").textContent="Add a contact";contactForm.querySelector('button[type="submit"]').textContent="Save contact";cancelEdit.hidden=true;formMessage.textContent="";}
 function canWrite(){return currentUser&&["admin","staff"].includes(currentUser.role);}
 function updateAuthUI(){signedInAs.textContent=currentUser?currentUser.username+" · "+currentUser.role:"Not signed in";loginToggle.hidden=Boolean(currentUser);logoutButton.hidden=!currentUser;contactForm.querySelectorAll("input,select,button").forEach(control=>{if(control.id!=="cancel-edit")control.disabled=!canWrite();});quickAction.disabled=(currentPage==="contacts"&&!canWrite())||(currentPage==="settings"&&(!currentUser||currentUser.role!=="admin"));if(adminWorkspace)adminWorkspace.hidden=currentPage!=="settings"||!currentUser||currentUser.role!=="admin";}
 function drawContacts(contacts){
