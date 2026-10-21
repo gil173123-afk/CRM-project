@@ -1,25 +1,5 @@
-CRM 2 automated test run
-Source: GitHub Actions workflow "CRM 1 tests"
-Commit checked out by runner: a8d34677e1b2b57773eeac36437aeea4a1f6536e
-Node.js: v20.20.2
-Command: npm test
+CRM 2 test execution status
 
-TAP version 13
-ok 1 - serves the CRM home page
-ok 2 - lists and searches seeded contacts case-insensitively
-ok 3 - rejects blank names, invalid email and duplicate email
-ok 4 - creates and edits a contact without changing its ID
-ok 5 - viewer can read but cannot create contacts
-ok 6 - rejects writes when logged out
-ok 7 - archive retains the record and creates an audit entry
-ok 8 - households endpoint returns seeded household data
-1..8
-# tests 8
-# suites 0
-# pass 8
-# fail 0
-# cancelled 0
-# skipped 0
-# todo 0
+The earlier 8-test CI result belongs to commit a8d34677e1b2b57773eeac36437aeea4a1f6536e and does NOT verify the current branch head.
 
-Result: automated CI tests passed for the checked-out commit. This is not evidence that manual browser, keyboard, restart-persistence, or failed-save checks have been completed.
+Current branch changes include additional admin user/settings APIs and tests. No CI run or local execution result has been retrieved for the current branch head yet. Do not treat the latest code as passing until the workflow is run and its output is reviewed.
