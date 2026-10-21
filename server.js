@@ -143,6 +143,19 @@ function createServer(options = {}) {
         audit(user, contact.id, "create");
         return sendJson(res, 201, { contact });
       }
+      const archiveMatch = url.pathname.match(/^\/api\/contacts\/([^/]+)\/archive$/);
+      if (archiveMatch && req.method === "POST") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin", "staff"], res)) return;
+        const id = decodeURIComponent(archiveMatch[1]);
+        const contacts = readContacts(dataFile);
+        const index = contacts.findIndex(c => c.id === id);
+        if (index < 0) return sendJson(res, 404, { error: "Contact not found." });
+        contacts[index].archived = true;
+        writeContacts(dataFile, contacts);
+        audit(user, id, "archive");
+        return sendJson(res, 200, { contact: contacts[index] });
+      }
       const contactMatch = url.pathname.match(/^\/api\/contacts\/([^/]+)$/);
       if (contactMatch && req.method === "PUT") {
         const user = requireUser(req, res); if (!user) return;
@@ -164,18 +177,6 @@ function createServer(options = {}) {
           household_id: valid.householdId, email_opt_in: body.email_opt_in === true || body.email_opt_in === "true" };
         writeContacts(dataFile, contacts);
         audit(user, id, "edit");
-        return sendJson(res, 200, { contact: contacts[index] });
-      }
-      if (contactMatch && req.method === "POST" && contactMatch[1] === "archive") {
-        const user = requireUser(req, res); if (!user) return;
-        if (!requireRole(user, ["admin", "staff"], res)) return;
-        const id = decodeURIComponent(contactMatch[1]);
-        const contacts = readContacts(dataFile);
-        const index = contacts.findIndex(c => c.id === id);
-        if (index < 0) return sendJson(res, 404, { error: "Contact not found." });
-        contacts[index].archived = true;
-        writeContacts(dataFile, contacts);
-        audit(user, id, "archive");
         return sendJson(res, 200, { contact: contacts[index] });
       }
       if (url.pathname === "/api/settings" && req.method !== "GET") {
