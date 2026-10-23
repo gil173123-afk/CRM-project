@@ -104,3 +104,25 @@ test("viewer can read memberships but cannot renew",async()=>withMembershipServe
   const response=await viewer.request("/api/memberships/M101/renew",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:40,date:"2026-10-15",status:"paid",payment_code:"VIEWER-TRY"})});
   assert.equal(response.status,403);
 }));
+
+test("late renewal starts on payment date and year-end dates add a calendar year",async()=>withMembershipServer(async({login})=>{
+  const staff=await login("staff","staff-demo");
+  const late=await staff.request("/api/memberships/M113/renew",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:35,date:"2026-10-15",method:"cash",status:"paid",payment_code:"LATE-M113"})});
+  assert.equal(late.status,200);
+  const lateMembership=(await late.json()).membership;
+  assert.equal(lateMembership.periods.at(-1).start_date,"2026-10-15");
+  assert.equal(lateMembership.periods.at(-1).end_date,"2027-10-15");
+  const yearEnd=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"C130",plan:"individual",amount:35,start_date:"2026-12-31",payment_date:"2026-12-31",method:"cash",payment_status:"paid",payment_code:"YEAR-END-C130"})});
+  assert.equal(yearEnd.status,201);
+  assert.equal((await yearEnd.json()).membership.end_date,"2027-12-31");
+}));
+
+test("status boundary excludes 31 days and includes 30 days in expiring",async()=>withMembershipServer(async({base})=>{
+  const at31=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
+  assert.equal(at31.memberships.find(m=>m.id==="M107").days_left,30);
+  const at30=await (await fetch(base+"/api/memberships?as_of=2026-10-16")).json();
+  assert.equal(at30.memberships.find(m=>m.id==="M107").days_left,29);
+  const endReached=await (await fetch(base+"/api/memberships?as_of=2026-11-15")).json();
+  assert.equal(endReached.memberships.find(m=>m.id==="M107").status,"expired");
+  assert.equal(endReached.memberships.find(m=>m.id==="M107").expiring,false);
+}));
