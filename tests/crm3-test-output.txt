@@ -1,0 +1,9 @@
+CRM 3 test output / verification record
+
+Branch: crm3-memberships-renewals
+Test command: npm test
+Status at file creation: NOT YET RUN/VERIFIED for the current branch head.
+
+The automated test source is present at tests/crm3-memberships.test.js. This file intentionally does not fabricate a passing transcript. Review the latest GitHub Actions run for this branch, or run npm test locally, then replace this status with the actual output and date.
+
+Manual browser walkthrough and demo video: not yet recorded.
