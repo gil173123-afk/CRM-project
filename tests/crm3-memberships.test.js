@@ -117,12 +117,18 @@ test("late renewal starts on payment date and year-end dates add a calendar year
   assert.equal((await yearEnd.json()).membership.end_date,"2027-12-31");
 }));
 
-test("status boundary excludes 31 days and includes 30 days in expiring",async()=>withMembershipServer(async({base})=>{
+test("status boundary excludes 31 days, includes 30 days and expires on end date",async()=>withMembershipServer(async({base,login})=>{
+  const staff=await login("staff","staff-demo");
+  const created=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"C130",plan:"individual",amount:35,start_date:"2025-11-15",payment_date:"2025-11-15",method:"cash",payment_status:"paid",payment_code:"BOUNDARY-C130"})});
+  assert.equal(created.status,201);
+  const id=(await created.json()).membership.id;
   const at31=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
-  assert.equal(at31.memberships.find(m=>m.id==="M107").days_left,30);
+  assert.equal(at31.memberships.find(m=>m.id===id).days_left,31);
+  assert.equal(at31.memberships.find(m=>m.id===id).expiring,false);
   const at30=await (await fetch(base+"/api/memberships?as_of=2026-10-16")).json();
-  assert.equal(at30.memberships.find(m=>m.id==="M107").days_left,29);
+  assert.equal(at30.memberships.find(m=>m.id===id).days_left,30);
+  assert.equal(at30.memberships.find(m=>m.id===id).expiring,true);
   const endReached=await (await fetch(base+"/api/memberships?as_of=2026-11-15")).json();
-  assert.equal(endReached.memberships.find(m=>m.id==="M107").status,"expired");
-  assert.equal(endReached.memberships.find(m=>m.id==="M107").expiring,false);
+  assert.equal(endReached.memberships.find(m=>m.id===id).status,"expired");
+  assert.equal(endReached.memberships.find(m=>m.id===id).expiring,false);
 }));
