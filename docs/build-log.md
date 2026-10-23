@@ -32,3 +32,15 @@ These demo credentials are for local classroom use only. This project is not pro
 - Automated API tests and fixture-count checks are configured in GitHub Actions. Review the latest run on the `crm2-rubric-completion` branch before treating the current code as passing.
 - The browser-based keyboard-only walkthrough, real server-restart persistence check, and actual video recording are evidence tasks that cannot be honestly marked complete without executing/capturing them.
 - The CRM 2 rubric focuses on contacts/login; membership, donation, and task records are fixture data for future classroom exercises and are not full interactive modules in this build.
+
+
+## CRM 3 — Memberships and Renewals (branch: crm3-memberships-renewals)
+- Added a membership seed mode that imports all 20 classroom membership records and creates fake payment-history records.
+- Added persisted membership periods, payments, and plan settings JSON files.
+- Added membership status API with a shared As of date, active/expiring/expired/pending lists, paid-membership counts, and deduplicated covered-person counts.
+- Added calendar-year period calculations, leap-day handling, end-exclusive coverage, early/late renewals, saved prices, payment-code uniqueness and idempotent paid retries.
+- Added staff/admin membership write permissions, viewer write rejection, admin-only plan settings, and membership/payment audit entries.
+- Added membership and renewal forms, status filters, coverage-period history, payment history, and admin plan-price screen.
+- Added automated CRM 3 tests for fixture baseline counts, early and late renewals, duplicate codes, failed/pending renewals, leap-day/year-end dates, 30/31-day status boundary, saved plan prices and viewer restrictions.
+- Tests are configured to run with `npm test`; their latest result must be checked before treating this branch as verified.
+- Manual browser keyboard checks and a real demo video are not claimed complete until captured.

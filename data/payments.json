@@ -1,0 +1,222 @@
+[
+  {
+    "id": "P-SEED-M101",
+    "membership_id": "M101",
+    "payment_code": "MEM-101",
+    "amount": 40,
+    "date": "2025-10-31",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M102",
+    "membership_id": "M102",
+    "payment_code": "MEM-102",
+    "amount": 40,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M103",
+    "membership_id": "M103",
+    "payment_code": "MEM-103",
+    "amount": 35,
+    "date": "2025-10-16",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M104",
+    "membership_id": "M104",
+    "payment_code": "MEM-104",
+    "amount": 35,
+    "date": "2025-10-17",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M105",
+    "membership_id": "M105",
+    "payment_code": "MEM-105",
+    "amount": 35,
+    "date": "2025-11-01",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M106",
+    "membership_id": "M106",
+    "payment_code": "MEM-106",
+    "amount": 35,
+    "date": "2025-11-10",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M107",
+    "membership_id": "M107",
+    "payment_code": "MEM-107",
+    "amount": 35,
+    "date": "2025-11-14",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M108",
+    "membership_id": "M108",
+    "payment_code": "MEM-108",
+    "amount": 35,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M109",
+    "membership_id": "M109",
+    "payment_code": "MEM-109",
+    "amount": 35,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M110",
+    "membership_id": "M110",
+    "payment_code": "MEM-110",
+    "amount": 35,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M111",
+    "membership_id": "M111",
+    "payment_code": "MEM-111",
+    "amount": 35,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M112",
+    "membership_id": "M112",
+    "payment_code": "MEM-112",
+    "amount": 30,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M113",
+    "membership_id": "M113",
+    "payment_code": "MEM-113",
+    "amount": 35,
+    "date": "2025-10-01",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M114",
+    "membership_id": "M114",
+    "payment_code": "MEM-114",
+    "amount": 35,
+    "date": "2025-10-01",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M115",
+    "membership_id": "M115",
+    "payment_code": "MEM-115",
+    "amount": 35,
+    "date": "2025-10-01",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M116",
+    "membership_id": "M116",
+    "payment_code": "MEM-116",
+    "amount": 35,
+    "date": "2025-10-01",
+    "method": "seeded",
+    "status": "paid",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M117",
+    "membership_id": "M117",
+    "payment_code": "MEM-117",
+    "amount": 35,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "pending",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M118",
+    "membership_id": "M118",
+    "payment_code": "MEM-118",
+    "amount": 35,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "pending",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M119",
+    "membership_id": "M119",
+    "payment_code": "MEM-119",
+    "amount": 35,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "pending",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  },
+  {
+    "id": "P-SEED-M120",
+    "membership_id": "M120",
+    "payment_code": "MEM-120",
+    "amount": 35,
+    "date": "2026-10-15",
+    "method": "seeded",
+    "status": "pending",
+    "created_by": "seed",
+    "created_at": "2026-10-15T00:00:00.000Z"
+  }
+]

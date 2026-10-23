@@ -50,3 +50,22 @@ These are classroom demo credentials, not production security. Custom user passw
 
 ## Evidence
 See `docs/build-log.md`, `tests/crm2-tests.md`, and `tests/crm2-test-output.txt`. Do not mark browser-only checks or demo-video evidence complete until actually performed.
+
+
+## CRM 3 — Memberships and Renewals
+- Seed membership data and fake payment history with `npm run seed -- memberships`.
+- The seed file is `data/crm-classroom-test-data.json`; the command writes `data/memberships.json`, `data/payments.json`, and `data/membership-plans.json`.
+- Demo plan prices: individual $35, family $40, student/senior $30. Each plan lasts one calendar year.
+- Open **Memberships** after logging in. Admin and staff can create memberships and record renewals; viewers are blocked by server-side checks.
+- Membership status lists use the selected **As of date**. The start date is covered; the end date is not. Expiring means 1–30 days remain and is a subset of Active.
+- Early renewals start at the previous paid end date; late renewals start on the payment date. Leap-day periods end on February 28 the following year.
+- Payment codes are unique. Repeating the same paid code for the same membership, amount, and date is idempotent. Failed/pending renewals do not add paid coverage.
+- Only admins can change plan prices. A saved price remains on past membership periods when plan settings change.
+- Membership periods, payment history, and audit events persist in JSON files. Use fake payment methods only.
+
+## CRM 3 test commands
+```sh
+npm run seed -- memberships
+npm test
+```
+The test suite includes `tests/crm3-memberships.test.js`. See `tests/crm3-tests.md` for the required manual checks and video evidence status.

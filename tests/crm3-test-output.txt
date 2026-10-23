@@ -1,0 +1,30 @@
+CRM 3 automated test output
+
+Date: 2026-10-23
+Branch: crm3-memberships-renewals
+GitHub Actions workflow: CRM 2 and CRM 3 tests
+Run: https://github.com/gil173123-afk/CRM-project/actions/runs/39992944526
+Result: SUCCESS
+
+Node.js: v20.20.2
+Command: npm test
+Tests: 24
+Passed: 24
+Failed: 0
+Skipped: 0
+Duration: approximately 341 ms
+
+Fixture check: PASSED — 30 contacts, 5 households, 20 memberships.
+
+CRM 3 tests passed:
+- Baseline status lists and counts
+- Early renewal date preservation and idempotent duplicate payment code
+- Failed and pending renewals do not add paid coverage
+- Leap-day calculation and invalid-date rejection
+- Admin-only plan changes and historical price preservation
+- Viewer read access and renewal write rejection
+- Late renewal and year-end dates
+- 31-day/30-day/end-date status boundaries
+- Family membership covering three household contacts
+
+The same CI run also passed the existing CRM 2 test suite. Manual browser keyboard checks and a real demo video are still outstanding; they are not covered by this automated test output.
