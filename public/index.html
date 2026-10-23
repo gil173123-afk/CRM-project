@@ -95,6 +95,54 @@
               <div class="table-wrap"><table class="contact-table"><thead><tr><th>Username</th><th>Role</th><th>Type</th><th>Action</th></tr></thead><tbody id="user-rows"></tbody></table></div>
             </section>
           </div>
+          <div id="memberships-workspace" hidden>
+            <div class="membership-counts" id="membership-counts" aria-live="polite"></div>
+            <div class="filters membership-filters">
+              <label class="search-label">As of date <input id="membership-as-of" type="date" value="2026-10-15"></label>
+              <label class="search-label">Status list <select id="membership-status"><option value="">All memberships</option><option value="active">Active</option><option value="expiring">Expiring (1–30 days)</option><option value="expired">Expired</option><option value="pending">Pending</option></select></label>
+              <button type="button" class="secondary-button" id="refresh-memberships">Refresh status</button>
+            </div>
+            <section class="contact-form">
+              <h3>Build a membership</h3>
+              <form id="membership-form" class="form-grid">
+                <label>Contact <select name="contact_id" id="membership-contact" required></select></label>
+                <label>Family household (optional) <select name="household_id" id="membership-household"><option value="">No household</option></select></label>
+                <label>Plan <select name="plan" id="membership-plan" required><option value="individual">Individual</option><option value="family">Family</option><option value="student_senior">Student / Senior</option></select></label>
+                <label>Saved price ($) <input name="amount" id="membership-amount" type="number" min="0.01" step="0.01" required></label>
+                <label>Start date <input name="start_date" id="membership-start-date" type="date" required></label>
+                <label>Payment date <input name="payment_date" type="date" required></label>
+                <label>Payment method <select name="method"><option value="cash">Cash (fake)</option><option value="card">Card (fake)</option><option value="check">Check (fake)</option><option value="other">Other</option></select></label>
+                <label>Payment status <select name="payment_status"><option value="paid">Paid</option><option value="pending">Pending</option><option value="failed">Failed</option></select></label>
+                <label>Unique payment code <input name="payment_code" maxlength="80" required placeholder="e.g. NEW-C130-01"></label>
+                <div class="form-actions wide-field"><button class="primary-button" type="submit">Save membership</button><span id="membership-message" role="status" aria-live="polite"></span></div>
+              </form>
+            </section>
+            <section class="contact-form" id="renewal-section" hidden>
+              <h3 id="renewal-title">Renew membership</h3>
+              <form id="renewal-form" class="form-grid">
+                <input type="hidden" name="membership_id">
+                <label>Amount ($) <input name="amount" type="number" min="0.01" step="0.01" required></label>
+                <label>Payment date <input name="date" type="date" required></label>
+                <label>Method <select name="method"><option value="cash">Cash (fake)</option><option value="card">Card (fake)</option><option value="check">Check (fake)</option><option value="other">Other</option></select></label>
+                <label>Status <select name="status"><option value="paid">Paid</option><option value="pending">Pending</option><option value="failed">Failed</option></select></label>
+                <label>Unique payment code <input name="payment_code" maxlength="80" required></label>
+                <div class="form-actions wide-field"><button class="primary-button" type="submit">Record renewal payment</button><button class="secondary-button" id="cancel-renewal" type="button">Cancel</button><span id="renewal-message" role="status" aria-live="polite"></span></div>
+              </form>
+            </section>
+            <div class="contact-list-heading"><h3>Memberships <span id="membership-count" class="count-pill">0</span></h3><p>Paid memberships count separately from people covered. Expiring memberships are included in Active.</p></div>
+            <div class="table-wrap"><table class="contact-table"><thead><tr><th>ID / contact</th><th>Plan / price saved</th><th>Paid coverage periods</th><th>Status</th><th>People covered</th><th>Payments / actions</th></tr></thead><tbody id="membership-rows"></tbody></table></div>
+            <section class="contact-form" id="membership-plans-admin" hidden>
+              <h3>Membership plan settings (admin only)</h3>
+              <form id="membership-plans-form" class="form-grid">
+                <label>Individual price ($) <input name="individual" type="number" min="0.01" step="0.01" required></label>
+                <label>Family price ($) <input name="family" type="number" min="0.01" step="0.01" required></label>
+                <label>Student / senior price ($) <input name="student_senior" type="number" min="0.01" step="0.01" required></label>
+                <p class="wide-field">Every plan lasts one calendar year. Prices saved on past membership periods never change.</p>
+                <div class="form-actions wide-field"><button class="primary-button" type="submit">Save plan prices</button><span id="membership-plans-message" role="status"></span></div>
+              </form>
+            </section>
+            <section class="contact-form"><h3>Payment history</h3><div class="table-wrap"><table class="contact-table"><thead><tr><th>Code</th><th>Membership</th><th>Amount</th><th>Date</th><th>Method</th><th>Status</th></tr></thead><tbody id="payment-rows"></tbody></table></div></section>
+          </div>
         </section>
         <p class="footer-note">CRM 2 classroom build · Fake test data only · JSON file persistence</p>
       </section>
