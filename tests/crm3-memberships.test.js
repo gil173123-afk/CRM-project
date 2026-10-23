@@ -132,3 +132,19 @@ test("status boundary excludes 31 days, includes 30 days and expires on end date
   assert.equal(endReached.memberships.find(m=>m.id===id).status,"expired");
   assert.equal(endReached.memberships.find(m=>m.id===id).expiring,false);
 }));
+
+test("one family membership covers three household contacts",async()=>withMembershipServer(async({login,base,files})=>{
+  const contacts=JSON.parse(fs.readFileSync(files.dataFile,"utf8"));
+  contacts.push({id:"C9001",name:"Family Person Two",email:"",household_id:"H900",archived:false});
+  contacts.push({id:"C9002",name:"Family Person Three",email:"",household_id:"H900",archived:false});
+  fs.writeFileSync(files.dataFile,JSON.stringify(contacts));
+  const households=JSON.parse(fs.readFileSync(files.householdsFile,"utf8"));
+  households.push({id:"H900",name:"Isolated family",contact_ids:["C130","C9001","C9002"]});
+  fs.writeFileSync(files.householdsFile,JSON.stringify(households));
+  const staff=await login("staff","staff-demo");
+  const created=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"C130",household_id:"H900",plan:"family",amount:40,start_date:"2026-10-15",payment_date:"2026-10-15",method:"cash",payment_status:"paid",payment_code:"FAMILY-H900"})});
+  assert.equal(created.status,201);
+  const membership=(await created.json()).membership;
+  const dashboard=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
+  assert.equal(dashboard.memberships.find(m=>m.id===membership.id).covered_people,3);
+}));
