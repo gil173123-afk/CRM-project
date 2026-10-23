@@ -1,0 +1,20 @@
+[
+  {
+    "id": "individual",
+    "name": "Individual",
+    "price": 35,
+    "duration_years": 1
+  },
+  {
+    "id": "family",
+    "name": "Family",
+    "price": 40,
+    "duration_years": 1
+  },
+  {
+    "id": "student_senior",
+    "name": "Student / Senior",
+    "price": 30,
+    "duration_years": 1
+  }
+]
