@@ -95,7 +95,7 @@ function createServer(options = {}) {
   ];
   function plans() { const saved = readArray(plansFile); return saved.length ? saved : defaultPlans; }
   function validDate(value) {
-    if (typeof value !== "string" || !/^\\d{4}-\\d{2}-\\d{2}$/.test(value)) return false;
+    if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
     const d = new Date(value + "T00:00:00.000Z");
     return !Number.isNaN(d.getTime()) && d.toISOString().slice(0, 10) === value;
   }
@@ -294,8 +294,6 @@ function createServer(options = {}) {
         return sendJson(res, 200, result);
       }
       if (url.pathname === "/api/membership-plans" && req.method === "GET") {
-        const user = requireUser(req, res); if (!user) return;
-        if (!requireRole(user, ["admin"], res)) return;
         return sendJson(res, 200, { plans: plans() });
       }
       if (url.pathname === "/api/membership-plans" && req.method === "PUT") {
