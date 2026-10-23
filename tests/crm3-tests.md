@@ -22,6 +22,8 @@ Demo logins: admin / admin-demo; staff / staff-demo; viewer / viewer-demo.
 - End date is exclusive; 31 days remaining is not expiring, 30 days remaining is expiring.
 - Admin-only plan settings; changing plan prices does not rewrite saved membership prices.
 - Viewer can read memberships but cannot renew them.
+- Wrong amounts and unknown contact/household IDs are rejected without partially writing a membership/payment.
+- Audit history is checked for actor, action and timestamp.
 
 ## Required manual checks
 - [ ] Seed memberships and verify 20 records; restart the app without reseeding and confirm saved changes remain.
@@ -41,4 +43,4 @@ Demo logins: admin / admin-demo; staff / staff-demo; viewer / viewer-demo.
 - [ ] Record a short demo video showing the above and add the share link here: **Not recorded yet**.
 
 ## Evidence status
-Automated test source is in `tests/crm3-memberships.test.js`. Do not mark tests passed until the current GitHub Actions run or local `npm test` output is reviewed. Manual browser checks and demo-video evidence are not complete until performed.
+Automated test source is in `tests/crm3-memberships.test.js`. Current automated verification passed on pull request #7: 25 tests passed, 0 failed; the fixture check passed for 30 contacts, five households and 20 memberships. See `tests/crm3-test-output.txt`. Manual browser checks and demo-video evidence are not complete until performed.
