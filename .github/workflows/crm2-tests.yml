@@ -1,4 +1,4 @@
-name: CRM 2 tests
+name: CRM 2 and CRM 3 tests
 
 on:
   push:
@@ -20,4 +20,4 @@ jobs:
         run: npm test
       - name: Check seed fixture counts
         run: |
-          node -e "const d=require('./data/crm-classroom-test-data.json'); if(d.contacts.length!==30||d.households.length!==5) process.exit(1); console.log('Fixture check passed: 30 contacts, 5 households')"
+          node -e "const d=require('./data/crm-classroom-test-data.json'); if(d.contacts.length!==30||d.households.length!==5||d.memberships.length!==20) process.exit(1); console.log('Fixture check passed: 30 contacts, 5 households, 20 memberships')"
