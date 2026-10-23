@@ -148,3 +148,24 @@ test("one family membership covers three household contacts",async()=>withMember
   const dashboard=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
   assert.equal(dashboard.memberships.find(m=>m.id===membership.id).covered_people,3);
 }));
+
+test("invalid membership input writes no partial membership or payment and valid writes are audited",async()=>withMembershipServer(async({login,files})=>{
+  const staff=await login("staff","staff-demo");
+  const beforeMemberships=JSON.parse(fs.readFileSync(files.membershipsFile,"utf8")).length;
+  const beforePayments=JSON.parse(fs.readFileSync(files.paymentsFile,"utf8")).length;
+  const badAmount=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"C130",plan:"individual",amount:99,start_date:"2026-10-15",payment_date:"2026-10-15",method:"cash",payment_status:"paid",payment_code:"BAD-AMOUNT"})});
+  assert.equal(badAmount.status,400);
+  const badContact=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"NO-SUCH-CONTACT",plan:"individual",amount:35,start_date:"2026-10-15",payment_date:"2026-10-15",method:"cash",payment_status:"paid",payment_code:"BAD-CONTACT"})});
+  assert.equal(badContact.status,400);
+  const badHousehold=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"C130",household_id:"NO-SUCH-HOUSEHOLD",plan:"individual",amount:35,start_date:"2026-10-15",payment_date:"2026-10-15",method:"cash",payment_status:"paid",payment_code:"BAD-HOUSEHOLD"})});
+  assert.equal(badHousehold.status,400);
+  assert.equal(JSON.parse(fs.readFileSync(files.membershipsFile,"utf8")).length,beforeMemberships);
+  assert.equal(JSON.parse(fs.readFileSync(files.paymentsFile,"utf8")).length,beforePayments);
+  const valid=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"C130",plan:"individual",amount:35,start_date:"2026-10-15",payment_date:"2026-10-15",method:"cash",payment_status:"paid",payment_code:"AUDIT-C130"})});
+  assert.equal(valid.status,201);
+  const id=(await valid.json()).membership.id;
+  const audit=JSON.parse(fs.readFileSync(files.auditFile,"utf8"));
+  const entries=audit.filter(e=>e.membership_id===id);
+  assert.ok(entries.some(e=>e.action==="create-membership"&&e.actor==="staff-demo"&&Number.isFinite(Date.parse(e.timestamp))));
+  assert.ok(entries.some(e=>e.action==="record-payment"));
+}));
