@@ -48,7 +48,7 @@ test("CRM 3 baseline status lists and counts match the classroom fixture",async(
   assert.deepEqual(data.counts,{paid_memberships:12,active_memberships:12,expiring_memberships:6,expired_memberships:4,pending_memberships:4,covered_people:14});
 }));
 
-test("early renewal preserves paid time, adds one year, and duplicate code is idempotent",async()=>withMembershipServer(async({login,base})=>{
+test("early renewal preserves paid time, adds one year, and duplicate code is idempotent",async()=>withMembershipServer(async({login,base,files})=>{
   const staff=await login("staff","staff-demo");
   const body={amount:40,date:"2026-10-15",method:"cash",status:"paid",payment_code:"R-M101-01"};
   const first=await staff.request("/api/memberships/M101/renew",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
@@ -63,8 +63,8 @@ test("early renewal preserves paid time, adds one year, and duplicate code is id
   assert.equal(dashboard.counts.active_memberships,12);
   assert.equal(dashboard.counts.covered_people,14);
   assert.equal(dashboard.counts.expiring_memberships,5);
-  const payments=JSON.parse(fs.readFileSync((await import("node:url")).fileURLToPath(new URL("file://"+process.cwd()+"/data/payments.json"))));
-  assert.ok(Array.isArray(payments));
+  const payments=JSON.parse(fs.readFileSync(files.paymentsFile,"utf8"));
+  assert.equal(payments.filter(p=>p.payment_code==="R-M101-01").length,1);
 }));
 
 test("failed and pending renewals do not add paid coverage",async()=>withMembershipServer(async({login})=>{
@@ -86,7 +86,7 @@ test("date rules handle leap day and reject impossible dates",async()=>withMembe
   assert.equal(invalid.status,400);
 }));
 
-test("admin alone changes plan prices and old saved membership prices stay unchanged",async()=>withMembershipServer(async({login})=>{
+test("admin alone changes plan prices and old saved membership prices stay unchanged",async()=>withMembershipServer(async({login,base})=>{
   const staff=await login("staff","staff-demo");
   const denied=await staff.request("/api/membership-plans",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({plans:[]})});
   assert.equal(denied.status,403);
@@ -94,8 +94,8 @@ test("admin alone changes plan prices and old saved membership prices stay uncha
   const plans=[{id:"individual",price:35,duration_years:1},{id:"family",price:50,duration_years:1},{id:"student_senior",price:30,duration_years:1}];
   const saved=await admin.request("/api/membership-plans",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({plans})});
   assert.equal(saved.status,200);
-  const dashboard=await (await fetch("http://127.0.0.1:"+saved.url.split(":").pop().split("/")[0]+"/api/memberships?as_of=2026-10-15").catch(()=>({json:async()=>({})}))).json();
-  assert.ok(dashboard.counts===undefined || dashboard.memberships===undefined || dashboard.memberships.find(m=>m.id==="M101").price===40);
+  const dashboard=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
+  assert.equal(dashboard.memberships.find(m=>m.id==="M101").price,40);
 }));
 
 test("viewer can read memberships but cannot renew",async()=>withMembershipServer(async({login})=>{
