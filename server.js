@@ -132,7 +132,16 @@ function createServer(options = {}) {
       const periods = paidPeriods(m);
       const status = memberStatus(m, asOf);
       const current = periods.filter(p => p.start_date <= asOf && asOf < p.end_date).sort((a,b)=>b.end_date.localeCompare(a.end_date))[0];
-      const end = current?.end_date || m.end_date || null;
+      let end = current?.end_date || m.end_date || null;
+      if (current) {
+        let extended = true;
+        while (extended) {
+          extended = false;
+          for (const period of periods) {
+            if (period.start_date <= end && period.end_date > end) { end = period.end_date; extended = true; }
+          }
+        }
+      }
       const daysLeft = status === "active" && end ? dayDifference(end, asOf) : null;
       const people = coveredIds(m, contacts, households);
       return { ...m, periods, status, days_left: daysLeft, expiring: status === "active" && daysLeft >= 1 && daysLeft <= 30, covered_people: people.length };
@@ -329,7 +338,7 @@ function createServer(options = {}) {
         writeArray(membershipsFile,memberships); writeArray(paymentsFile,payments); auditMembership(user,id,"create-membership"); auditMembership(user,id,"record-payment");
         return sendJson(res,201,{membership,payment});
       }
-      const renewMatch = url.pathname.match(/^\\/api\\/memberships\\/([^/]+)\\/renew$/);
+      const renewMatch = url.pathname.match(/^\/api\/memberships\/([^/]+)\/renew$/);
       if (renewMatch && req.method === "POST") {
         const user = requireUser(req,res); if (!user) return;
         if (!requireRole(user,["admin","staff"],res)) return;
