@@ -1,6 +1,6 @@
 # CRM-project
 
-A dependency-free Node.js CRM classroom project for the CRM 2 Contacts and Login rubric.
+A dependency-free Node.js CRM classroom project covering contacts/login (CRM 2) and memberships/renewals (CRM 3).
 
 ## Requirements
 - Node.js 20 or newer
