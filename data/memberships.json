@@ -1,0 +1,370 @@
+[
+  {
+    "id": "M101",
+    "contact_id": "C101",
+    "household_id": "H101",
+    "plan": "family",
+    "price": 40,
+    "start_date": "2025-10-31",
+    "end_date": "2026-10-31",
+    "payment_status": "paid",
+    "payment_code": "MEM-101",
+    "periods": [
+      {
+        "start_date": "2025-10-31",
+        "end_date": "2026-10-31",
+        "price": 40,
+        "payment_status": "paid",
+        "payment_code": "MEM-101"
+      }
+    ]
+  },
+  {
+    "id": "M102",
+    "contact_id": "C103",
+    "household_id": "H102",
+    "plan": "family",
+    "price": 40,
+    "start_date": "2026-10-15",
+    "end_date": "2027-10-15",
+    "payment_status": "paid",
+    "payment_code": "MEM-102",
+    "periods": [
+      {
+        "start_date": "2026-10-15",
+        "end_date": "2027-10-15",
+        "price": 40,
+        "payment_status": "paid",
+        "payment_code": "MEM-102"
+      }
+    ]
+  },
+  {
+    "id": "M103",
+    "contact_id": "C105",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-10-16",
+    "end_date": "2026-10-16",
+    "payment_status": "paid",
+    "payment_code": "MEM-103",
+    "periods": [
+      {
+        "start_date": "2025-10-16",
+        "end_date": "2026-10-16",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-103"
+      }
+    ]
+  },
+  {
+    "id": "M104",
+    "contact_id": "C106",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-10-17",
+    "end_date": "2026-10-17",
+    "payment_status": "paid",
+    "payment_code": "MEM-104",
+    "periods": [
+      {
+        "start_date": "2025-10-17",
+        "end_date": "2026-10-17",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-104"
+      }
+    ]
+  },
+  {
+    "id": "M105",
+    "contact_id": "C107",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-11-01",
+    "end_date": "2026-11-01",
+    "payment_status": "paid",
+    "payment_code": "MEM-105",
+    "periods": [
+      {
+        "start_date": "2025-11-01",
+        "end_date": "2026-11-01",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-105"
+      }
+    ]
+  },
+  {
+    "id": "M106",
+    "contact_id": "C108",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-11-10",
+    "end_date": "2026-11-10",
+    "payment_status": "paid",
+    "payment_code": "MEM-106",
+    "periods": [
+      {
+        "start_date": "2025-11-10",
+        "end_date": "2026-11-10",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-106"
+      }
+    ]
+  },
+  {
+    "id": "M107",
+    "contact_id": "C109",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-11-14",
+    "end_date": "2026-11-14",
+    "payment_status": "paid",
+    "payment_code": "MEM-107",
+    "periods": [
+      {
+        "start_date": "2025-11-14",
+        "end_date": "2026-11-14",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-107"
+      }
+    ]
+  },
+  {
+    "id": "M108",
+    "contact_id": "C110",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2026-10-15",
+    "end_date": "2027-10-15",
+    "payment_status": "paid",
+    "payment_code": "MEM-108",
+    "periods": [
+      {
+        "start_date": "2026-10-15",
+        "end_date": "2027-10-15",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-108"
+      }
+    ]
+  },
+  {
+    "id": "M109",
+    "contact_id": "C111",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2026-10-15",
+    "end_date": "2027-10-15",
+    "payment_status": "paid",
+    "payment_code": "MEM-109",
+    "periods": [
+      {
+        "start_date": "2026-10-15",
+        "end_date": "2027-10-15",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-109"
+      }
+    ]
+  },
+  {
+    "id": "M110",
+    "contact_id": "C112",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2026-10-15",
+    "end_date": "2027-10-15",
+    "payment_status": "paid",
+    "payment_code": "MEM-110",
+    "periods": [
+      {
+        "start_date": "2026-10-15",
+        "end_date": "2027-10-15",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-110"
+      }
+    ]
+  },
+  {
+    "id": "M111",
+    "contact_id": "C113",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2026-10-15",
+    "end_date": "2027-10-15",
+    "payment_status": "paid",
+    "payment_code": "MEM-111",
+    "periods": [
+      {
+        "start_date": "2026-10-15",
+        "end_date": "2027-10-15",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-111"
+      }
+    ]
+  },
+  {
+    "id": "M112",
+    "contact_id": "C114",
+    "household_id": null,
+    "plan": "student_senior",
+    "price": 30,
+    "start_date": "2026-10-15",
+    "end_date": "2027-10-15",
+    "payment_status": "paid",
+    "payment_code": "MEM-112",
+    "periods": [
+      {
+        "start_date": "2026-10-15",
+        "end_date": "2027-10-15",
+        "price": 30,
+        "payment_status": "paid",
+        "payment_code": "MEM-112"
+      }
+    ]
+  },
+  {
+    "id": "M113",
+    "contact_id": "C115",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-10-01",
+    "end_date": "2026-10-01",
+    "payment_status": "paid",
+    "payment_code": "MEM-113",
+    "periods": [
+      {
+        "start_date": "2025-10-01",
+        "end_date": "2026-10-01",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-113"
+      }
+    ]
+  },
+  {
+    "id": "M114",
+    "contact_id": "C116",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-10-01",
+    "end_date": "2026-10-01",
+    "payment_status": "paid",
+    "payment_code": "MEM-114",
+    "periods": [
+      {
+        "start_date": "2025-10-01",
+        "end_date": "2026-10-01",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-114"
+      }
+    ]
+  },
+  {
+    "id": "M115",
+    "contact_id": "C117",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-10-01",
+    "end_date": "2026-10-01",
+    "payment_status": "paid",
+    "payment_code": "MEM-115",
+    "periods": [
+      {
+        "start_date": "2025-10-01",
+        "end_date": "2026-10-01",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-115"
+      }
+    ]
+  },
+  {
+    "id": "M116",
+    "contact_id": "C118",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": "2025-10-01",
+    "end_date": "2026-10-01",
+    "payment_status": "paid",
+    "payment_code": "MEM-116",
+    "periods": [
+      {
+        "start_date": "2025-10-01",
+        "end_date": "2026-10-01",
+        "price": 35,
+        "payment_status": "paid",
+        "payment_code": "MEM-116"
+      }
+    ]
+  },
+  {
+    "id": "M117",
+    "contact_id": "C119",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": null,
+    "end_date": null,
+    "payment_status": "pending",
+    "payment_code": "MEM-117",
+    "periods": []
+  },
+  {
+    "id": "M118",
+    "contact_id": "C120",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": null,
+    "end_date": null,
+    "payment_status": "pending",
+    "payment_code": "MEM-118",
+    "periods": []
+  },
+  {
+    "id": "M119",
+    "contact_id": "C121",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": null,
+    "end_date": null,
+    "payment_status": "pending",
+    "payment_code": "MEM-119",
+    "periods": []
+  },
+  {
+    "id": "M120",
+    "contact_id": "C122",
+    "household_id": null,
+    "plan": "individual",
+    "price": 35,
+    "start_date": null,
+    "end_date": null,
+    "payment_status": "pending",
+    "payment_code": "MEM-120",
+    "periods": []
+  }
+]
