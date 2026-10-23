@@ -1,30 +1,31 @@
 CRM 3 automated test output
 
 Date: 2026-10-23
-Branch: crm3-memberships-renewals
-GitHub Actions workflow: CRM 2 and CRM 3 tests
-Run: https://github.com/gil173123-afk/CRM-project/actions/runs/39992944526
+Pull request: https://github.com/gil173123-afk/CRM-project/pull/7
+GitHub Actions run: https://github.com/gil173123-afk/CRM-project/actions/runs/39998560143
 Result: SUCCESS
 
-Node.js: v20.20.2
+Runtime: Node.js v20.20.2
 Command: npm test
-Tests: 24
-Passed: 24
+Tests: 25
+Passed: 25
 Failed: 0
 Skipped: 0
-Duration: approximately 341 ms
+Duration: 278.958767 ms
 
 Fixture check: PASSED — 30 contacts, 5 households, 20 memberships.
 
-CRM 3 tests passed:
+CRM 3 coverage includes:
 - Baseline status lists and counts
-- Early renewal date preservation and idempotent duplicate payment code
+- Early and late renewals, continuous paid time and idempotent duplicate payment codes
 - Failed and pending renewals do not add paid coverage
-- Leap-day calculation and invalid-date rejection
+- Leap-day and year-end calculations, impossible-date rejection, and 30/31-day status boundaries
 - Admin-only plan changes and historical price preservation
 - Viewer read access and renewal write rejection
-- Late renewal and year-end dates
-- 31-day/30-day/end-date status boundaries
-- Family membership covering three household contacts
+- Family membership coverage for three household contacts
+- Invalid amount/contact/household rejection without partial membership/payment writes
+- Membership/payment audit entries with actor, action and timestamp
 
-The same CI run also passed the existing CRM 2 test suite. Manual browser keyboard checks and a real demo video are still outstanding; they are not covered by this automated test output.
+Existing CRM 2 tests also passed, including contact validation/editing, role restrictions, C130 archive retention, and restart persistence.
+
+Manual browser/keyboard checks and a real demo video are still outstanding. They are not covered by this automated test output.
