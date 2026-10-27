@@ -1,10 +1,13 @@
 CRM 4 automated test output
 
+Date: 2026-10-27
 Branch: crm4-donations-events
-Command: npm test
-Status: pending GitHub Actions for this branch's current head.
+Pull request: https://github.com/gil173123-afk/CRM-project/pull/8
 
-Test source: tests/crm4-donations-events.test.js
-Expected coverage: donation/event linking, amount/date/contact validation, duplicate donation references, follow-up-key deduplication, task edit/completion, viewer write rejection, and audit records.
+GitHub Actions:
+- CRM 2 and CRM 3 tests: SUCCESS — npm test passed; classroom fixture check passed (30 contacts, 5 households, 20 memberships).
+- CRM 1 tests: SUCCESS — npm test passed.
 
-Do not treat this file as a passing transcript until the current CI run completes. Manual browser/keyboard checks and a real demo video are still outstanding.
+CRM 4 tests are included in the npm test suite and cover donation/event linking, impossible dates and unknown contacts, duplicate donation references, follow-up deduplication, task editing/completion, viewer write rejection, and audit records.
+
+Manual browser/keyboard walkthrough and real demo video are still outstanding; they are not represented as completed by automated tests.
