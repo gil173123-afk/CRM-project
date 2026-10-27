@@ -44,3 +44,13 @@ These demo credentials are for local classroom use only. This project is not pro
 - Added automated CRM 3 tests for fixture baseline counts, early and late renewals, duplicate codes, failed/pending renewals, leap-day/year-end dates, 30/31-day status boundary, saved plan prices and viewer restrictions.
 - Tests are configured to run with `npm test`; their latest result must be checked before treating this branch as verified.
 - Manual browser keyboard checks and a real demo video are not claimed complete until captured.
+
+
+## CRM 4 — Donations and Events (branch: crm4-donations-events)
+- Added persisted donation records linked to contacts and optional fundraising events, with amount/date/status/reference validation.
+- Added fundraising event records with goals and received-donation totals in the interface.
+- Added linked follow-up tasks with edit/complete controls and follow-up-key deduplication.
+- Added server-side admin/staff write checks; viewers are rejected for donations, events and tasks.
+- Added audit entries for donation, event and task creation and task edits/completion.
+- Added seed modes for events, donations and tasks and automated tests for linked records, duplicate references/follow-ups, invalid inputs, role enforcement and audit history.
+- CRM 4 automated and manual evidence status is tracked in tests/crm4-tests.md and tests/crm4-test-output.txt.
