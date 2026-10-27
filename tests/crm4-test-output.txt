@@ -1,0 +1,10 @@
+CRM 4 automated test output
+
+Branch: crm4-donations-events
+Command: npm test
+Status: pending GitHub Actions for this branch's current head.
+
+Test source: tests/crm4-donations-events.test.js
+Expected coverage: donation/event linking, amount/date/contact validation, duplicate donation references, follow-up-key deduplication, task edit/completion, viewer write rejection, and audit records.
+
+Do not treat this file as a passing transcript until the current CI run completes. Manual browser/keyboard checks and a real demo video are still outstanding.
