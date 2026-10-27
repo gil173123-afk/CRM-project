@@ -2,10 +2,10 @@ const fs = require("node:fs");
 const path = require("node:path");
 const root = path.join(__dirname, "..");
 const sections = process.argv.slice(2);
-const allowed = ["contacts", "households", "memberships"];
+const allowed = ["contacts", "households", "memberships", "donations", "events", "tasks"];
 if (!sections.length || sections.some(section => !allowed.includes(section))) {
   console.error("Usage: npm run seed -- contacts [households] [memberships]");
-  console.error("Available seed sections: contacts, households, memberships");
+  console.error("Available seed sections: contacts, households, memberships, donations, events, tasks");
   process.exit(1);
 }
 const source = JSON.parse(fs.readFileSync(path.join(root, "data", "crm-classroom-test-data.json"), "utf8"));
@@ -33,4 +33,27 @@ if (sections.includes("memberships")) {
     {id:"student_senior",name:"Student / Senior",price:30,duration_years:1}
   ]);
   console.log("Seeded " + memberships.length + " memberships and " + payments.length + " fake payment records.");
+}
+
+if (sections.includes("events")) {
+  const events = [
+    {id:"E101",name:"Autumn Community Walk",date:"2026-10-24",goal:2500,description:"Classroom fundraiser"},
+    {id:"E102",name:"Winter Giving Campaign",date:"2026-12-05",goal:5000,description:"Classroom campaign"}
+  ];
+  save("fundraising-events.json", events);
+  console.log("Seeded " + events.length + " fundraising events.");
+}
+if (sections.includes("donations")) {
+  const events = JSON.parse(fs.readFileSync(path.join(root,"data","fundraising-events.json"),"utf8"));
+  const contacts = JSON.parse(fs.readFileSync(path.join(root,"data","contacts.json"),"utf8"));
+  const donors = contacts.slice(0,5);
+  const donations = donors.map((c,i)=>({id:"D10"+(i+1),contact_id:c.id,event_id:events[i%events.length].id,membership_id:null,amount:[50,100,25,75,150][i],date:source.test_date,status:"received",method:"seeded",reference:"DON-SEED-10"+(i+1),notes:"Fake classroom donation",created_by:"seed",created_at:source.test_date+"T00:00:00.000Z"}));
+  save("donations.json", donations);
+  console.log("Seeded " + donations.length + " fake donations.");
+}
+if (sections.includes("tasks")) {
+  const contacts = JSON.parse(fs.readFileSync(path.join(root,"data","contacts.json"),"utf8"));
+  const tasks = contacts.slice(0,3).map((c,i)=>({id:"T10"+(i+1),title:["Thank donor","Send event details","Follow up on pledge"][i],contact_id:c.id,donation_id:null,event_id:"E101",due_date:"2026-10-20",status:"open",notes:"Seeded classroom follow-up",followup_key:"seed:"+c.id+":"+i,created_by:"seed",created_at:source.test_date+"T00:00:00.000Z",completed_at:null}));
+  save("tasks.json", tasks);
+  console.log("Seeded " + tasks.length + " fake tasks.");
 }
