@@ -95,6 +95,30 @@
               <div class="table-wrap"><table class="contact-table"><thead><tr><th>Username</th><th>Role</th><th>Type</th><th>Action</th></tr></thead><tbody id="user-rows"></tbody></table></div>
             </section>
           </div>
+          <div id="donations-workspace" hidden>
+            <section class="contact-form"><h3>Record a donation</h3><form id="donation-form" class="form-grid">
+              <label>Contact <select name="contact_id" id="donation-contact" required></select></label><label>Fundraising event <select name="event_id" id="donation-event"><option value="">No event</option></select></label>
+              <label>Amount ($) <input name="amount" type="number" min="0.01" step="0.01" required></label><label>Date <input name="date" type="date" required></label>
+              <label>Method <select name="method"><option>cash</option><option>check</option><option>online (fake)</option><option>other</option></select></label><label>Status <select name="status"><option value="received">Received</option><option value="pledged">Pledged</option><option value="refunded">Refunded</option></select></label>
+              <label>Unique reference <input name="reference" maxlength="80" required></label><label>Notes <input name="notes" maxlength="300"></label>
+              <div class="form-actions wide-field"><button class="primary-button" type="submit">Save donation</button><span id="donation-message" role="status"></span></div>
+            </form></section>
+            <section class="contact-form"><h3>Create fundraising event</h3><form id="event-form" class="form-grid">
+              <label>Event / campaign name <input name="name" maxlength="120" required></label><label>Date <input name="date" type="date" required></label><label>Goal ($) <input name="goal" type="number" min="0" step="0.01" required></label><label>Description <input name="description" maxlength="300"></label>
+              <div class="form-actions wide-field"><button class="primary-button" type="submit">Save event</button><span id="event-message" role="status"></span></div>
+            </form></section>
+            <div class="table-wrap"><table class="contact-table"><thead><tr><th>Date</th><th>Contact</th><th>Event</th><th>Amount</th><th>Status</th><th>Reference</th></tr></thead><tbody id="donation-rows"></tbody></table></div>
+            <section class="contact-form"><h3>Fundraising events</h3><div class="table-wrap"><table class="contact-table"><thead><tr><th>Name</th><th>Date</th><th>Goal</th><th>Received</th></tr></thead><tbody id="event-rows"></tbody></table></div></section>
+          </div>
+          <div id="tasks-workspace" hidden>
+            <section class="contact-form"><h3>Create a follow-up task</h3><form id="task-form" class="form-grid">
+              <label>Task title <input name="title" maxlength="160" required></label><label>Contact <select name="contact_id" id="task-contact" required></select></label>
+              <label>Related donation <select name="donation_id" id="task-donation"><option value="">None</option></select></label><label>Related event <select name="event_id" id="task-event"><option value="">None</option></select></label>
+              <label>Due date <input name="due_date" type="date"></label><label>Notes <input name="notes" maxlength="300"></label>
+              <div class="form-actions wide-field"><button class="primary-button" type="submit">Save task</button><span id="task-message" role="status"></span></div>
+            </form></section>
+            <div class="table-wrap"><table class="contact-table"><thead><tr><th>Task</th><th>Contact</th><th>Due</th><th>Status</th><th>Actions</th></tr></thead><tbody id="task-rows"></tbody></table></div>
+          </div>
           <div id="memberships-workspace" hidden>
             <div class="membership-counts" id="membership-counts" aria-live="polite"></div>
             <div class="filters membership-filters">
@@ -144,7 +168,7 @@
             <section class="contact-form"><h3>Payment history</h3><div class="table-wrap"><table class="contact-table"><thead><tr><th>Code</th><th>Membership</th><th>Amount</th><th>Date</th><th>Method</th><th>Status</th></tr></thead><tbody id="payment-rows"></tbody></table></div></section>
           </div>
         </section>
-        <p class="footer-note">CRM 2 + CRM 3 classroom build · Fake test data only · JSON file persistence</p>
+        <p class="footer-note">CRM 2–4 classroom build · Fake test data only · JSON file persistence</p>
       </section>
     </main>
   </div>

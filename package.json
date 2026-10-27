@@ -2,7 +2,7 @@
   "name": "crm-project",
   "version": "1.0.0",
   "private": true,
-  "description": "CRM 2 classroom contact and login starter",
+  "description": "CRM classroom project: contacts, memberships, donations, events and tasks",
   "scripts": {
     "start": "node server.js",
     "test": "node --test",

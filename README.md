@@ -69,3 +69,13 @@ npm run seed -- memberships
 npm test
 ```
 The test suite includes `tests/crm3-memberships.test.js`. See `tests/crm3-tests.md` for the required manual checks and video evidence status.
+
+
+## CRM 4 — Donations and Events
+- Seed the classroom baseline with `npm run seed -- contacts households memberships events donations tasks`. Seed mode overwrites the selected local JSON files with fake classroom records.
+- Sign in as `admin / admin-demo`, `staff / staff-demo`, or `viewer / viewer-demo`. Admin and staff can create donations, fundraising events and tasks; viewers cannot write, with server-side enforcement.
+- In **Donations**, create a donation linked to an active contact and optional fundraising event. Amount must be positive, date must be a real calendar date, and the donation reference must be unique. Use fake payment methods only.
+- Create fundraising events with a date and goal. Event totals count received donations linked to that event.
+- In **Tasks**, create follow-ups linked to contacts and optionally to a donation/event. Tasks can be edited and completed. A repeated follow-up key returns the existing task rather than creating a duplicate.
+- Donation, event and task records persist in `data/donations.json`, `data/fundraising-events.json`, and `data/tasks.json`. Audit entries are appended to the audit log.
+- CRM 4 API and access checks are covered by `tests/crm4-donations-events.test.js`; see `tests/crm4-tests.md` for the rubric checklist and evidence status.

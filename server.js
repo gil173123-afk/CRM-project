@@ -12,6 +12,9 @@ const DEFAULT_SETTINGS_FILE = path.join(ROOT, "data", "settings.json");
 const DEFAULT_MEMBERSHIPS_FILE = path.join(ROOT, "data", "memberships.json");
 const DEFAULT_PAYMENTS_FILE = path.join(ROOT, "data", "payments.json");
 const DEFAULT_PLANS_FILE = path.join(ROOT, "data", "membership-plans.json");
+const DEFAULT_DONATIONS_FILE = path.join(ROOT, "data", "donations.json");
+const DEFAULT_EVENTS_FILE = path.join(ROOT, "data", "fundraising-events.json");
+const DEFAULT_TASKS_FILE = path.join(ROOT, "data", "tasks.json");
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml" };
 const DEMO_USERS = [
   { id: "admin-demo", username: "admin", password: "admin-demo", role: "admin" },
@@ -69,6 +72,9 @@ function createServer(options = {}) {
   const membershipsFile = options.membershipsFile || DEFAULT_MEMBERSHIPS_FILE;
   const paymentsFile = options.paymentsFile || DEFAULT_PAYMENTS_FILE;
   const plansFile = options.plansFile || DEFAULT_PLANS_FILE;
+  const donationsFile = options.donationsFile || DEFAULT_DONATIONS_FILE;
+  const eventsFile = options.eventsFile || DEFAULT_EVENTS_FILE;
+  const tasksFile = options.tasksFile || DEFAULT_TASKS_FILE;
   const userSessions = options.sessions || sessions;
   function currentUser(req) {
     const cookie = (req.headers.cookie || "").split(";").map(v => v.trim()).find(v => v.startsWith("crm_session="));
@@ -370,6 +376,79 @@ function createServer(options = {}) {
         const user=requireUser(req,res); if(!user)return;
         if(!requireRole(user,["admin","staff"],res))return;
         return sendJson(res,200,{payments:readArray(paymentsFile)});
+      }
+      if (url.pathname === "/api/donations" && req.method === "GET") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin", "staff"], res)) return;
+        return sendJson(res, 200, { donations: readArray(donationsFile) });
+      }
+      if (url.pathname === "/api/donations" && req.method === "POST") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin", "staff"], res)) return;
+        const body = await readBody(req), contacts = readContacts(dataFile), memberships = readArray(membershipsFile);
+        const contactId = cleanString(body.contact_id), eventId = cleanString(body.event_id) || null;
+        if (!contacts.some(c => c.id === contactId && !c.archived)) return sendJson(res, 400, { error: "Choose an existing active contact." });
+        if (eventId && !readArray(eventsFile).some(e => e.id === eventId)) return sendJson(res, 400, { error: "Choose an existing fundraising event." });
+        const amount = Number(body.amount), date = cleanString(body.date), method = cleanString(body.method || "other"), status = cleanString(body.status || "received"), code = cleanString(body.reference);
+        if (!Number.isFinite(amount) || amount <= 0 || amount > 10000000) return sendJson(res, 400, { error: "Donation amount must be greater than zero." });
+        if (!validDate(date)) return sendJson(res, 400, { error: "Enter a real donation date." });
+        if (!["received", "pledged", "refunded"].includes(status)) return sendJson(res, 400, { error: "Choose received, pledged, or refunded status." });
+        if (!code) return sendJson(res, 400, { error: "A unique donation reference is required." });
+        const donations = readArray(donationsFile);
+        if (donations.some(d => d.reference.toLowerCase() === code.toLowerCase())) return sendJson(res, 409, { error: "That donation reference has already been used." });
+        const donation = { id: "D-" + crypto.randomUUID(), contact_id: contactId, event_id: eventId, membership_id: cleanString(body.membership_id) || null, amount: Math.round(amount * 100) / 100, date, method, status, reference: code, notes: cleanString(body.notes), created_by: user.id, created_at: new Date().toISOString() };
+        if (donation.membership_id && !memberships.some(m => m.id === donation.membership_id && m.contact_id === contactId)) return sendJson(res, 400, { error: "The selected membership does not belong to this contact." });
+        donations.push(donation); writeArray(donationsFile, donations);
+        auditMembership(user, donation.id, "create-donation");
+        return sendJson(res, 201, { donation });
+      }
+      if (url.pathname === "/api/fundraising-events" && req.method === "GET") {
+        return sendJson(res, 200, { events: readArray(eventsFile) });
+      }
+      if (url.pathname === "/api/fundraising-events" && req.method === "POST") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin", "staff"], res)) return;
+        const body = await readBody(req), name = cleanString(body.name), date = cleanString(body.date), goal = Number(body.goal);
+        if (!name) return sendJson(res, 400, { error: "Event name is required." });
+        if (!validDate(date)) return sendJson(res, 400, { error: "Enter a real event date." });
+        if (!Number.isFinite(goal) || goal < 0) return sendJson(res, 400, { error: "Goal must be zero or greater." });
+        const events = readArray(eventsFile), event = { id: "E-" + crypto.randomUUID(), name: name.slice(0,120), date, goal: Math.round(goal*100)/100, description: cleanString(body.description), created_by: user.id, created_at: new Date().toISOString() };
+        events.push(event); writeArray(eventsFile, events); auditMembership(user, event.id, "create-fundraising-event");
+        return sendJson(res, 201, { event });
+      }
+      if (url.pathname === "/api/tasks" && req.method === "GET") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin", "staff"], res)) return;
+        return sendJson(res, 200, { tasks: readArray(tasksFile) });
+      }
+      if (url.pathname === "/api/tasks" && req.method === "POST") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin", "staff"], res)) return;
+        const body = await readBody(req), title = cleanString(body.title), contactId = cleanString(body.contact_id), dueDate = cleanString(body.due_date);
+        if (!title) return sendJson(res, 400, { error: "Task title is required." });
+        if (!readContacts(dataFile).some(c => c.id === contactId && !c.archived)) return sendJson(res, 400, { error: "Choose an existing active contact." });
+        if (dueDate && !validDate(dueDate)) return sendJson(res, 400, { error: "Enter a real due date or leave it blank." });
+        const tasks = readArray(tasksFile), followupKey = cleanString(body.followup_key);
+        if (followupKey && tasks.some(t => t.followup_key === followupKey)) return sendJson(res, 200, { task: tasks.find(t => t.followup_key === followupKey), duplicate: true });
+        const task = { id: "T-" + crypto.randomUUID(), title: title.slice(0,160), contact_id: contactId, donation_id: cleanString(body.donation_id) || null, event_id: cleanString(body.event_id) || null, due_date: dueDate || null, status: "open", notes: cleanString(body.notes), followup_key: followupKey || null, created_by: user.id, created_at: new Date().toISOString(), completed_at: null };
+        if (task.donation_id && !readArray(donationsFile).some(d => d.id === task.donation_id && d.contact_id === contactId)) return sendJson(res, 400, { error: "The selected donation does not belong to this contact." });
+        if (task.event_id && !readArray(eventsFile).some(e => e.id === task.event_id)) return sendJson(res, 400, { error: "Choose an existing event." });
+        tasks.push(task); writeArray(tasksFile, tasks); auditMembership(user, task.id, "create-task");
+        return sendJson(res, 201, { task });
+      }
+      const taskMatch = url.pathname.match(/^\/api\/tasks\/([^/]+)$/);
+      if (taskMatch && req.method === "PUT") {
+        const user = requireUser(req, res); if (!user) return;
+        if (!requireRole(user, ["admin", "staff"], res)) return;
+        const id = decodeURIComponent(taskMatch[1]), tasks = readArray(tasksFile), index = tasks.findIndex(t => t.id === id);
+        if (index < 0) return sendJson(res, 404, { error: "Task not found." });
+        const body = await readBody(req), status = cleanString(body.status || tasks[index].status);
+        if (!["open", "in_progress", "completed", "cancelled"].includes(status)) return sendJson(res, 400, { error: "Choose a valid task status." });
+        tasks[index] = { ...tasks[index], title: body.title === undefined ? tasks[index].title : cleanString(body.title), due_date: body.due_date === undefined ? tasks[index].due_date : (cleanString(body.due_date) || null), notes: body.notes === undefined ? tasks[index].notes : cleanString(body.notes), status, completed_at: status === "completed" ? (tasks[index].completed_at || new Date().toISOString()) : null, updated_by: user.id, updated_at: new Date().toISOString() };
+        if (!tasks[index].title) return sendJson(res, 400, { error: "Task title is required." });
+        if (tasks[index].due_date && !validDate(tasks[index].due_date)) return sendJson(res, 400, { error: "Enter a real due date." });
+        writeArray(tasksFile, tasks); auditMembership(user, id, status === "completed" ? "complete-task" : "update-task");
+        return sendJson(res, 200, { task: tasks[index] });
       }
       if (url.pathname === "/api/settings" && req.method === "GET") {
         const user = requireUser(req, res); if (!user) return;

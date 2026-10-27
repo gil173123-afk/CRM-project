@@ -1,0 +1,13 @@
+CRM 4 automated test output
+
+Date: 2026-10-27
+Branch: crm4-donations-events
+Pull request: https://github.com/gil173123-afk/CRM-project/pull/8
+
+GitHub Actions:
+- CRM 2 and CRM 3 tests: SUCCESS — npm test passed; classroom fixture check passed (30 contacts, 5 households, 20 memberships).
+- CRM 1 tests: SUCCESS — npm test passed.
+
+CRM 4 tests are included in the npm test suite and cover donation/event linking, impossible dates and unknown contacts, duplicate donation references, follow-up deduplication, task editing/completion, viewer write rejection, and audit records.
+
+Manual browser/keyboard walkthrough and real demo video are still outstanding; they are not represented as completed by automated tests.
