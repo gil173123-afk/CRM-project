@@ -58,7 +58,7 @@ test("campaign file includes gifts and duplicate file keys do not create duplica
  await staff("/api/donations",{method:"POST",body:json({contact_id:"C101",event_id:event.id,amount:75,date:"2026-10-15",status:"received",reference:"CAMPAIGN-GIFT-1"})});
  const body={campaign_id:event.id,file_key:"campaign:"+event.id+":D1"};
  const first=await staff("/api/campaign-downloads",{method:"POST",body:json(body)});assert.equal(first.status,201);
- const file=(await first.json()).file;assert.equal(file.content.gifts.length,1);assert.equal(file.content.total,75);
+ const file=(await first.json()).file;assert.equal(file.content.gifts.length,1);assert.equal(file.content.received_total,75);
  const second=await staff("/api/campaign-downloads",{method:"POST",body:json(body)});assert.equal(second.status,200);assert.equal((await second.json()).idempotent,true);
  assert.equal(JSON.parse(fs.readFileSync(files.campaignFilesFile,"utf8")).length,1);
  const gift=(await (await staff("/api/donations")).json()).donations[0];
