@@ -244,7 +244,7 @@ function createServer(options = {}) {
         audit(user, id, "archive");
         return sendJson(res, 200, { contact: contacts[index] });
       }
-      const contactSummaryMatch=url.pathname.match(/^\\/api\\/contacts\\/([^/]+)\\/summary$/);
+      const contactSummaryMatch=url.pathname.match(/^\/api\/contacts\/([^/]+)\/summary$/);
       if(contactSummaryMatch&&req.method==="GET"){
         const user=requireUser(req,res);if(!user)return;
         const id=decodeURIComponent(contactSummaryMatch[1]),contact=readContacts(dataFile).find(c=>c.id===id);
