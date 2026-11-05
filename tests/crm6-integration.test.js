@@ -105,7 +105,7 @@ test("startup seed is opt-in and test fixture contains stable CRM relationships"
 
 test("viewer cannot change contacts, membership periods, donations or tasks",async()=>setup(async({login,files})=>{
  const staff=await login("staff","staff-demo");
- const contact=(await staff("/api/contacts",{method:"POST",body:json({name:"CRM6 Permission Contact",email:"crm6-permission@example.org"})}));assert.equal(contact.status,201);
+ const contactResponse=await staff("/api/contacts",{method:"POST",body:json({name:"CRM6 Permission Contact",email:"crm6-permission@example.org"})});assert.equal(contactResponse.status,201);const contact=(await contactResponse.json()).contact;
  const event=(await (await staff("/api/fundraising-events",{method:"POST",body:json({name:"Permission Campaign",date:"2026-10-15",goal:100})})).json()).event;
  const gift=(await (await staff("/api/donations",{method:"POST",body:json({contact_id:"C101",event_id:event.id,amount:15,date:"2026-10-15",status:"received",reference:"PERMISSION-GIFT"})})).json()).donation;
  const task=(await (await staff("/api/tasks",{method:"POST",body:json({title:"Thank donor",contact_id:"C101",donation_id:gift.id,followup_key:"permission-thank-you"})})).json()).task;
