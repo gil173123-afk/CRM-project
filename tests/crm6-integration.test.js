@@ -20,16 +20,16 @@ async function setup(run) {
   fs.writeFileSync(files.dataFile,JSON.stringify(fixture.contacts.map(c=>({...c,archived:false}))));
   fs.writeFileSync(files.householdsFile,JSON.stringify(fixture.households));
   for(const key of ["auditFile","usersFile","settingsFile","membershipsFile","paymentsFile","plansFile","donationsFile","eventsFile","tasksFile","campaignFilesFile"])fs.writeFileSync(files[key],"[]");
-  const server=createServer({...files,sessions:new Map()});
-  await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));
-  const base="http://127.0.0.1:"+server.address().port;
+  let server,base;
+  async function start(){server=createServer({...files,sessions:new Map()});await new Promise(resolve=>server.listen(0,"127.0.0.1",resolve));base="http://127.0.0.1:"+server.address().port;}
+  await start();
   async function login(username,password){
     const response=await fetch(base+"/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
     assert.equal(response.status,200);
     const cookie=response.headers.get("set-cookie").split(";")[0];
     return async(url,options={})=>fetch(base+url,{...options,headers:{"Content-Type":"application/json",cookie,...(options.headers||{})}});
   }
-  try{await run({base,files,login});}
+  try{await run({get base(){return base;},files,login,restart:async()=>{await new Promise(resolve=>server.close(resolve));await start();}});}
   finally{await new Promise(resolve=>server.close(resolve));fs.rmSync(dir,{recursive:true,force:true});}
 }
 const json=value=>JSON.stringify(value);
@@ -124,4 +124,25 @@ test("archiving a contact preserves its identity and linked donation history",as
  const contact=JSON.parse(fs.readFileSync(files.dataFile,"utf8")).find(c=>c.id==="C101");assert.equal(contact.archived,true);
  assert.equal(JSON.parse(fs.readFileSync(files.donationsFile,"utf8")).find(d=>d.id===gift.id).contact_id,"C101");
  const history=await (await staff("/api/records/C101/history")).json();assert.ok(history.entries.some(e=>e.action==="archive"));
+}));
+
+
+test("contact, membership, renewal, gift and thank-you task survive a server restart",async()=>setup(async({login,restart})=>{
+ let staff=await login("staff","staff-demo");
+ const contactResponse=await staff("/api/contacts",{method:"POST",body:json({name:"End-to-end Practice Contact",email:"end-to-end@example.org"})});assert.equal(contactResponse.status,201);
+ const contact=(await contactResponse.json()).contact;
+ const membershipResponse=await staff("/api/memberships",{method:"POST",body:json({contact_id:contact.id,plan:"individual",amount:35,start_date:"2026-10-15",payment_date:"2026-10-15",method:"cash",payment_status:"paid",payment_code:"E2E-MEMBER-01"})});assert.equal(membershipResponse.status,201);
+ const membership=(await membershipResponse.json()).membership;
+ const renewal=await staff("/api/memberships/"+membership.id+"/renew",{method:"POST",body:json({amount:35,date:"2026-10-15",method:"cash",status:"paid",payment_code:"E2E-RENEW-01"})});assert.equal(renewal.status,200);
+ const event=(await (await staff("/api/fundraising-events",{method:"POST",body:json({name:"End-to-end Campaign",date:"2026-10-15",goal:200})})).json()).event;
+ const giftResponse=await staff("/api/donations",{method:"POST",body:json({contact_id:contact.id,membership_id:membership.id,event_id:event.id,amount:25,date:"2026-10-15",status:"received",reference:"E2E-GIFT-01"})});assert.equal(giftResponse.status,201);
+ const gift=(await giftResponse.json()).donation;
+ const taskResponse=await staff("/api/tasks",{method:"POST",body:json({title:"Send thank-you note",contact_id:contact.id,donation_id:gift.id,event_id:event.id,followup_key:"e2e-thank-you:"+contact.id})});assert.equal(taskResponse.status,201);
+ const task=(await taskResponse.json()).task;
+ const complete=await staff("/api/tasks/"+task.id,{method:"PUT",body:json({status:"completed"})});assert.equal(complete.status,200);
+ await restart();staff=await login("staff","staff-demo");
+ const contacts=await (await staff("/api/contacts?q="+encodeURIComponent(contact.id))).json();assert.ok(contacts.contacts.some(c=>c.id===contact.id));
+ const memberships=await (await staff("/api/memberships?as_of=2026-10-15")).json();assert.equal(memberships.memberships.find(m=>m.id===membership.id).periods.length,2);
+ const gifts=await (await staff("/api/donations")).json();assert.ok(gifts.donations.some(d=>d.id===gift.id&&d.membership_id===membership.id));
+ const tasks=await (await staff("/api/tasks")).json();assert.ok(tasks.tasks.some(t=>t.id===task.id&&t.status==="completed"));
 }));
