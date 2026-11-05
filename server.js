@@ -374,6 +374,7 @@ function createServer(options = {}) {
         memberships[index]=updated; payments.push(payment);
         writeArray(membershipsFile,memberships); writeArray(paymentsFile,payments);
         auditMembership(user,id,status==="paid"?"renew-membership":"record-"+status+"-renewal"); auditMembership(user,id,"record-payment");
+        const auditRows=readArray(auditFile);auditRows.push({actor:user.id,record_id:payment.id,payment_id:payment.id,membership_id:id,action:"create-payment",timestamp:payment.created_at});writeArray(auditFile,auditRows);
         return sendJson(res,200,{membership:updated,payment});
       }
       if (url.pathname === "/api/payments" && req.method === "GET") {
@@ -383,7 +384,6 @@ function createServer(options = {}) {
       }
       if (url.pathname === "/api/donations" && req.method === "GET") {
         const user = requireUser(req, res); if (!user) return;
-        if (!requireRole(user, ["admin", "staff"], res)) return;
         return sendJson(res, 200, { donations: readArray(donationsFile) });
       }
       if (url.pathname === "/api/donations" && req.method === "POST") {
@@ -407,6 +407,7 @@ function createServer(options = {}) {
         return sendJson(res, 201, { donation });
       }
       if (url.pathname === "/api/fundraising-events" && req.method === "GET") {
+        const user=requireUser(req,res);if(!user)return;
         return sendJson(res, 200, { events: readArray(eventsFile) });
       }
       if (url.pathname === "/api/fundraising-events" && req.method === "POST") {
@@ -422,7 +423,6 @@ function createServer(options = {}) {
       }
       if (url.pathname === "/api/tasks" && req.method === "GET") {
         const user = requireUser(req, res); if (!user) return;
-        if (!requireRole(user, ["admin", "staff"], res)) return;
         return sendJson(res, 200, { tasks: readArray(tasksFile) });
       }
       if (url.pathname === "/api/tasks" && req.method === "POST") {
@@ -498,7 +498,7 @@ function createServer(options = {}) {
         const user=requireUser(req,res);if(!user)return;if(!requireRole(user,["admin","staff"],res))return;
         const body=await readBody(req),campaignId=cleanString(body.campaign_id),fileKey=cleanString(body.file_key);
         if(!campaignId||!fileKey)return sendJson(res,400,{error:"Campaign ID and unique file key are required."});
-        const files=readArray(campaignFilesFile),prior=files.find(f=>f.file_key.toLowerCase()===fileKey.toLowerCase());
+        const files=readArray(campaignFilesFile),prior=files.find(f=>String(f.file_key||"").toLowerCase()===fileKey.toLowerCase());
         if(prior)return sendJson(res,200,{file:prior,idempotent:true});
         const event=readArray(eventsFile).find(e=>e.id===campaignId);
         if(!event)return sendJson(res,404,{error:"Campaign not found."});
