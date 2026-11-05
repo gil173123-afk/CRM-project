@@ -530,7 +530,6 @@ function createServer(options = {}) {
         for(const [key,name] of Object.entries(names))writeArray(path.join(target,name),Array.isArray(d[key])?d[key]:[]);
         const manifest={format:body.format,version:body.version,source_exported_at:body.exported_at,restored_at:new Date().toISOString(),restored_by:user.id,files:Object.values(names)};
         fs.writeFileSync(path.join(target,"restore-manifest.json"),JSON.stringify(manifest,null,2)+"\n");
-        audit(user,"backup:"+path.basename(target),"restore-backup-copy");
         return sendJson(res,201,{restored:true,original_data_changed:false,copy_location:"data/restores/"+path.basename(target),manifest});
       }
       if (req.method !== "GET" && req.method !== "HEAD") return sendJson(res, 405, { error: "Method not allowed." });
