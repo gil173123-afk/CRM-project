@@ -79,7 +79,7 @@ test("admin backup exports required linked data and restores a separate copy wit
  fs.writeFileSync(files.tasksFile,JSON.stringify([{id:"T-KEEP",contact_id:"C-KEEP",donation_id:"D-KEEP"}]));
  fs.writeFileSync(files.auditFile,JSON.stringify([{record_id:"C-KEEP",action:"create",actor:"staff",timestamp:"2026-10-15T00:00:00.000Z"}]));
  const backupResponse=await admin("/api/backup");assert.equal(backupResponse.status,200);const backup=await backupResponse.json();
- for(const key of ["contacts","households","memberships","payments","donations","tasks","audit_history"])assert.ok(Array.isArray(backup.datasets[key]),key);
+ for(const key of ["contacts","households","memberships","payments","membership_plans","donations","fundraising_events","tasks","audit_history","campaign_files","settings"])assert.ok(Array.isArray(backup.datasets[key]),key);
  const restored=await admin("/api/backup/restore-copy",{method:"POST",body:json(backup)});assert.equal(restored.status,201);const result=await restored.json();assert.equal(result.original_data_changed,false);
  const copy=path.join(files.restoresDir,path.basename(result.copy_location));
  assert.equal(JSON.parse(fs.readFileSync(path.join(copy,"contacts.json"),"utf8"))[0].id,"C-KEEP");
