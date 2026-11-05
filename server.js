@@ -244,6 +244,20 @@ function createServer(options = {}) {
         audit(user, id, "archive");
         return sendJson(res, 200, { contact: contacts[index] });
       }
+      const contactSummaryMatch=url.pathname.match(/^\\/api\\/contacts\\/([^/]+)\\/summary$/);
+      if(contactSummaryMatch&&req.method==="GET"){
+        const user=requireUser(req,res);if(!user)return;
+        const id=decodeURIComponent(contactSummaryMatch[1]),contact=readContacts(dataFile).find(c=>c.id===id);
+        if(!contact)return sendJson(res,404,{error:"Contact not found."});
+        const memberships=readArray(membershipsFile).filter(m=>m.contact_id===id||(contact.household_id&&m.household_id===contact.household_id));
+        const membershipIds=new Set(memberships.map(m=>m.id));
+        const donations=readArray(donationsFile).filter(d=>d.contact_id===id),donationIds=new Set(donations.map(d=>d.id));
+        const tasks=readArray(tasksFile).filter(t=>t.contact_id===id||donationIds.has(t.donation_id));
+        const payments=readArray(paymentsFile).filter(p=>membershipIds.has(p.membership_id));
+        const relatedIds=new Set([id,...membershipIds,...donationIds,...tasks.map(t=>t.id),...payments.map(p=>p.id)]);
+        const history=readArray(auditFile).filter(e=>relatedIds.has(e.contact_id)||relatedIds.has(e.membership_id)||relatedIds.has(e.record_id)||relatedIds.has(e.payment_id));
+        return sendJson(res,200,{contact,memberships,donations,tasks,payments,history});
+      }
       const contactMatch = url.pathname.match(/^\/api\/contacts\/([^/]+)$/);
       if (contactMatch && req.method === "PUT") {
         const user = requireUser(req, res); if (!user) return;
