@@ -344,6 +344,7 @@ function createServer(options = {}) {
         const payment = { id:"P-"+crypto.randomUUID(), membership_id:id, payment_code:paymentCode, amount, date:paymentDate, method:cleanString(body.method)||"other", status:paymentStatus, created_by:user.id, created_at:new Date().toISOString() };
         const memberships=readArray(membershipsFile); memberships.push(membership); payments.push(payment);
         writeArray(membershipsFile,memberships); writeArray(paymentsFile,payments); auditMembership(user,id,"create-membership"); auditMembership(user,id,"record-payment");
+        const auditRows=readArray(auditFile);auditRows.push({actor:user.id,record_id:payment.id,payment_id:payment.id,membership_id:id,action:"create-payment",timestamp:payment.created_at});writeArray(auditFile,auditRows);
         return sendJson(res,201,{membership,payment});
       }
       const renewMatch = url.pathname.match(/^\/api\/memberships\/([^/]+)\/renew$/);
@@ -474,8 +475,8 @@ function createServer(options = {}) {
         const asOf=url.searchParams.get("as_of")||"2026-10-15";
         if(!validDate(asOf))return sendJson(res,400,{error:"As of must be a real calendar date."});
         const contacts=readContacts(dataFile), memberships=membershipDashboard(asOf), donations=readArray(donationsFile), tasks=readArray(tasksFile);
-        const received=donations.filter(d=>d.status==="received"),month=asOf.slice(0,7);
-        return sendJson(res,200,{as_of:asOf,contacts:{active:contacts.filter(c=>!c.archived).length,archived:contacts.filter(c=>c.archived).length},memberships:memberships.counts,donations:{received_total:received.reduce((n,d)=>n+Number(d.amount||0),0),received_count:received.length,month_total:received.filter(d=>String(d.date).startsWith(month)).reduce((n,d)=>n+Number(d.amount||0),0)},tasks:{open:tasks.filter(t=>["open","in_progress"].includes(t.status)).length,completed:tasks.filter(t=>t.status==="completed").length}});
+        const received=donations.filter(d=>d.status==="received"),month=asOf.slice(0,7),campaignFiles=readArray(campaignFilesFile);
+        return sendJson(res,200,{as_of:asOf,contacts:{active:contacts.filter(c=>!c.archived).length,archived:contacts.filter(c=>c.archived).length},memberships:memberships.counts,donations:{received_total:received.reduce((n,d)=>n+Number(d.amount||0),0),received_count:received.length,month_total:received.filter(d=>String(d.date).startsWith(month)).reduce((n,d)=>n+Number(d.amount||0),0)},tasks:{open:tasks.filter(t=>["open","in_progress"].includes(t.status)).length,completed:tasks.filter(t=>t.status==="completed").length},campaign_files:{count:campaignFiles.length}});
       }
       const historyMatch=url.pathname.match(/^\/api\/records\/([^/]+)\/history$/);
       if(historyMatch&&req.method==="GET"){
