@@ -99,11 +99,14 @@ The test suite includes `tests/crm3-memberships.test.js`. See `tests/crm3-tests.
 - Admins can download a full JSON backup containing contacts, households, memberships and periods, payments, donations, fundraising events, tasks, audit history, campaign files, settings and user records. Restore writes a separate copy under data/restores/ and does not replace live files.
 - Layout refinements support phone and laptop widths, independently scrollable data tables, visible keyboard focus and labelled controls.
 
-### Run and test
+### Install, load, start and test
+Node.js 20 or newer is required. This project has no third-party runtime dependencies; run npm install to prepare the local Node project.
+
+    npm install
     npm run seed -- all   # optional: resets the fake classroom baseline
-    npm test
     npm start
-Open http://localhost:3000. After entering project work, restart with npm start only; do not reseed.
+
+Open http://localhost:3000. Run npm test to execute the automated suite. After entering project work, restart with npm start only; do not reseed. After entering project work, restart with npm start only; do not reseed.
 
 ### Backup and restore
 Sign in as admin, open Settings, choose Download full backup. To restore, select the JSON file and choose Restore into separate copy. The restore creates a timestamped directory and manifest under data/restores/; live data remains unchanged.
