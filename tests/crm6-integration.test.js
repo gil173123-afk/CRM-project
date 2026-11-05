@@ -144,6 +144,7 @@ test("contact, membership, renewal, gift and thank-you task survive a server res
  const gift=(await giftResponse.json()).donation;
  const taskResponse=await staff("/api/tasks",{method:"POST",body:json({title:"Send thank-you note",contact_id:contact.id,donation_id:gift.id,event_id:event.id,followup_key:"e2e-thank-you:"+contact.id})});assert.equal(taskResponse.status,201);
  const task=(await taskResponse.json()).task;
+ const linked=await (await staff("/api/contacts/"+contact.id+"/summary")).json();assert.equal(linked.memberships.length,1);assert.equal(linked.donations.length,1);assert.equal(linked.tasks.length,1);assert.equal(linked.payments.length,2);
  const complete=await staff("/api/tasks/"+task.id,{method:"PUT",body:json({status:"completed"})});assert.equal(complete.status,200);
  await restart();staff=await login("staff","staff-demo");
  const contacts=await (await staff("/api/contacts?q="+encodeURIComponent(contact.id))).json();assert.ok(contacts.contacts.some(c=>c.id===contact.id));
