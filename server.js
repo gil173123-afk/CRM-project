@@ -188,6 +188,7 @@ function createServer(options = {}) {
         return sendJson(res, 200, { user: user ? { ...user, default_email_opt_in: Boolean(readArray(settingsFile)[0]?.default_email_opt_in) } : null });
       }
       if (url.pathname === "/api/contacts" && req.method === "GET") {
+        const user = requireUser(req, res); if (!user) return;
         const query = (url.searchParams.get("q") || "").trim().toLowerCase();
         const tag = (url.searchParams.get("tag") || "").trim().toLowerCase();
         const archived = url.searchParams.get("archived") === "true";
@@ -197,6 +198,7 @@ function createServer(options = {}) {
         return sendJson(res, 200, { contacts });
       }
       if (url.pathname === "/api/households" && req.method === "GET") {
+        const user = requireUser(req, res); if (!user) return;
         return sendJson(res, 200, { households: readArray(householdsFile) });
       }
       if (url.pathname === "/api/audit" && req.method === "GET") {
@@ -310,6 +312,7 @@ function createServer(options = {}) {
         return sendJson(res, 200, { ok: true });
       }
       if (url.pathname === "/api/memberships" && req.method === "GET") {
+        const user = requireUser(req, res); if (!user) return;
         const asOf = url.searchParams.get("as_of") || "2026-10-15";
         if (!validDate(asOf)) return sendJson(res, 400, { error: "As of must be a real calendar date in YYYY-MM-DD format." });
         const result = membershipDashboard(asOf);
@@ -318,6 +321,7 @@ function createServer(options = {}) {
         return sendJson(res, 200, result);
       }
       if (url.pathname === "/api/membership-plans" && req.method === "GET") {
+        const user = requireUser(req, res); if (!user) return;
         return sendJson(res, 200, { plans: plans() });
       }
       if (url.pathname === "/api/membership-plans" && req.method === "PUT") {
@@ -536,7 +540,7 @@ function createServer(options = {}) {
       if(url.pathname==="/api/backup/restore-copy"&&req.method==="POST"){
         const user=requireUser(req,res);if(!user)return;if(!requireRole(user,["admin"],res))return;
         const body=await readBody(req),d=body.datasets;
-        const required=["contacts","households","memberships","payments","membership_plans","donations","fundraising_events","tasks","audit_history"];
+        const required=["contacts","households","memberships","payments","membership_plans","donations","fundraising_events","tasks","audit_history","campaign_files","settings"];
         if(body.format!=="north-star-crm-backup"||!d||required.some(k=>!Array.isArray(d[k])))return sendJson(res,400,{error:"Backup is incomplete or has an unsupported format."});
         const stamp=new Date().toISOString().replace(/[:.]/g,"-"),target=path.join(restoresDir,"restore-"+stamp);
         const names={contacts:"contacts.json",households:"households.json",memberships:"memberships.json",payments:"payments.json",membership_plans:"membership-plans.json",donations:"donations.json",fundraising_events:"fundraising-events.json",tasks:"tasks.json",audit_history:"audit-log.json",campaign_files:"campaign-files.json",settings:"settings.json"};
