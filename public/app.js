@@ -1,7 +1,7 @@
 const pageContent = {
  dashboard:{title:"Dashboard",description:"A clear view of your community relationships.",action:"＋ Add contact",showStats:true,heading:"Quick links",detail:"Choose a section from the menu to get started."},
  contacts:{title:"Contacts",description:"Find people and keep their information organized.",action:"＋ Add contact",heading:"Contact workspace",detail:"Create, edit, search, tag, and archive contact records."},
- memberships:{title:"Memberships",description:"Review membership status and renewals.",action:"＋ Add membership",heading:"Membership workspace",detail:"Membership records are not part of this contact-focused build."},
+ memberships:{title:"Memberships",description:"Review membership status and renewals.",action:"＋ Add membership",heading:"Membership workspace",detail:"Create memberships, record payments and renewals, and review coverage dates."},
  donations:{title:"Donations",description:"Record donations and track fundraising event goals.",action:"＋ Add donation",heading:"Donations and fundraising",detail:"Link donations to contacts and events; use fake payment records only."},
  tasks:{title:"Tasks",description:"Track, edit and complete follow-up tasks.",action:"＋ Add task",heading:"Task workspace",detail:"Tasks link to contacts, donations and events; follow-up keys prevent duplicate tasks."},
  reports:{title:"Reports",description:"Review shared totals and record history.",action:"Refresh report",heading:"Workspace reports",detail:"Dashboard and reports use the same saved data and date rules."},
