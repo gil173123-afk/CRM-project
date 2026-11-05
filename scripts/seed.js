@@ -1,11 +1,13 @@
 const fs = require("node:fs");
 const path = require("node:path");
 const root = path.join(__dirname, "..");
-const sections = process.argv.slice(2);
-const allowed = ["contacts", "households", "memberships", "donations", "events", "tasks"];
-if (!sections.length || sections.some(section => !allowed.includes(section))) {
-  console.error("Usage: npm run seed -- contacts [households] [memberships]");
-  console.error("Available seed sections: contacts, households, memberships, donations, events, tasks");
+const requested = process.argv.slice(2);
+const allSections = ["contacts", "households", "memberships", "events", "donations", "tasks"];
+const sections = requested.includes("all") ? allSections : requested;
+const allowed = [...allSections, "all"];
+if (!sections.length || requested.some(section => !allowed.includes(section))) {
+  console.error("Usage: npm run seed -- all  OR  npm run seed -- contacts households memberships events donations tasks");
+  console.error("Available seed sections: all, contacts, households, memberships, events, donations, tasks");
   process.exit(1);
 }
 const source = JSON.parse(fs.readFileSync(path.join(root, "data", "crm-classroom-test-data.json"), "utf8"));
@@ -56,4 +58,9 @@ if (sections.includes("tasks")) {
   const tasks = contacts.slice(0,3).map((c,i)=>({id:"T10"+(i+1),title:["Thank donor","Send event details","Follow up on pledge"][i],contact_id:c.id,donation_id:null,event_id:"E101",due_date:"2026-10-20",status:"open",notes:"Seeded classroom follow-up",followup_key:"seed:"+c.id+":"+i,created_by:"seed",created_at:source.test_date+"T00:00:00.000Z",completed_at:null}));
   save("tasks.json", tasks);
   console.log("Seeded " + tasks.length + " fake tasks.");
+}
+if (requested.includes("all")) {
+  save("audit-log.json", []);
+  save("campaign-files.json", []);
+  console.log("Reset classroom audit history and campaign-file records.");
 }
