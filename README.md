@@ -79,3 +79,33 @@ The test suite includes `tests/crm3-memberships.test.js`. See `tests/crm3-tests.
 - In **Tasks**, create follow-ups linked to contacts and optionally to a donation/event. Tasks can be edited and completed. A repeated follow-up key returns the existing task rather than creating a duplicate.
 - Donation, event and task records persist in `data/donations.json`, `data/fundraising-events.json`, and `data/tasks.json`. Audit entries are appended to the audit log.
 - CRM 4 API and access checks are covered by `tests/crm4-donations-events.test.js`; see `tests/crm4-tests.md` for the rubric checklist and evidence status.
+
+
+## CRM 6 — Integrated workflows, shared totals, history, backups and responsive UI
+
+### Requirements
+- Node.js 20 or newer. No third-party packages are required.
+- Start with npm start. Opening or restarting the app does not seed, reset or overwrite saved records.
+- Load the complete fake practice dataset only when intentionally resetting a classroom environment: npm run seed -- all. This command overwrites the selected classroom JSON data files; do not run it after entering work you want to keep.
+- Demo accounts: admin / admin-demo, staff / staff-demo, and viewer / viewer-demo. They are built-in classroom accounts; do not use personal passwords.
+
+### CRM 6 workflows
+- Add a contact, create a membership, record a renewal, create a donation/gift linked to that contact and campaign, and create/complete a thank-you task linked to the donation. Existing contact, membership, donation and task IDs remain the links between screens.
+- The dashboard and Reports page read the same /api/workspace-summary endpoint and share the same date and total rules.
+- Cancelling a gift changes its status to cancelled; it does not delete the gift. Received totals exclude cancelled gifts.
+- Campaign download files include the campaign and its received gifts. The stable file key makes a repeated download request idempotent; a changed gift set produces a new file version.
+- Contacts, memberships, payments, donations, events, tasks and campaign files retain IDs and links. Record history is available by record ID; archive/cancel actions preserve the original record and append audit entries.
+- Admin, staff and viewer permissions are enforced on the server. Viewers can read workspace data but cannot write. Only admins can export or restore backups.
+- Admins can download a full JSON backup containing contacts, households, memberships and periods, payments, donations, fundraising events, tasks, audit history, campaign files, settings and user records. Restore writes a separate copy under data/restores/ and does not replace live files.
+- Layout refinements support phone and laptop widths, independently scrollable data tables, visible keyboard focus and labelled controls.
+
+### Run and test
+    npm run seed -- all   # optional: resets the fake classroom baseline
+    npm test
+    npm start
+Open http://localhost:3000. After entering project work, restart with npm start only; do not reseed.
+
+### Backup and restore
+Sign in as admin, open Settings, choose Download full backup. To restore, select the JSON file and choose Restore into separate copy. The restore creates a timestamped directory and manifest under data/restores/; live data remains unchanged.
+
+See tests/crm6-tests.md and tests/crm6-test-output.txt for automated and manual rubric evidence.
