@@ -152,3 +152,11 @@ test("contact, membership, renewal, gift and thank-you task survive a server res
  const gifts=await (await staff("/api/donations")).json();assert.ok(gifts.donations.some(d=>d.id===gift.id&&d.membership_id===membership.id));
  const tasks=await (await staff("/api/tasks")).json();assert.ok(tasks.tasks.some(t=>t.id===task.id&&t.status==="completed"));
 }));
+
+
+test("all CRM record read endpoints require a signed-in role",async()=>setup(async({base,login})=>{
+ const endpoints=["/api/contacts","/api/households","/api/memberships","/api/membership-plans","/api/donations","/api/fundraising-events","/api/tasks","/api/workspace-summary"];
+ for(const endpoint of endpoints){const response=await fetch(base+endpoint);assert.equal(response.status,401,endpoint+" must reject anonymous reads");}
+ const viewer=await login("viewer","viewer-demo");
+ for(const endpoint of endpoints){const response=await viewer(endpoint);assert.equal(response.status,200,endpoint+" should allow viewer reads");}
+}));
