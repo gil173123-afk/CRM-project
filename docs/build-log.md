@@ -54,3 +54,14 @@ These demo credentials are for local classroom use only. This project is not pro
 - Added audit entries for donation, event and task creation and task edits/completion.
 - Added seed modes for events, donations and tasks and automated tests for linked records, duplicate references/follow-ups, invalid inputs, role enforcement and audit history.
 - CRM 4 automated and manual evidence status is tracked in tests/crm4-tests.md and tests/crm4-test-output.txt.
+
+
+## CRM 6 implementation
+- Added a shared workspace summary endpoint used by dashboard and reports so contact, membership, gift and task totals are computed from saved records with one As of date.
+- Added record-history lookup; contact archive and gift cancellation retain records and append audit history.
+- Added idempotent campaign-giving file generation. Campaign files include the campaign and its received gifts; repeated identical file keys do not create duplicate files.
+- Added admin-only full backup export for contacts, households, memberships and paid periods, payments, donations, events, tasks, audit history, campaign files, settings and user records.
+- Added admin-only restore into a timestamped separate copy under data/restores. It does not overwrite live data.
+- Added dashboard/report UI, campaign download controls, gift cancellation, record-history access, backup/restore controls, mobile refinements and keyboard focus styling.
+- Added npm run seed -- all for the fake classroom baseline. npm start does not seed or reset data.
+- See tests/crm6-tests.md and tests/crm6-test-output.txt; do not mark manual browser checks complete until performed.
