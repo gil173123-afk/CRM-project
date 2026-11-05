@@ -39,10 +39,11 @@ test("serves the CRM home page", async () => withServer(async ({base}) => {
   assert.match(await response.text(),/North Star CRM/);
 }));
 
-test("lists and searches seeded contacts case-insensitively", async () => withServer(async ({base}) => {
-  const all=await (await fetch(base+"/api/contacts")).json();
+test("lists and searches seeded contacts case-insensitively", async () => withServer(async ({login}) => {
+  const staff=await login("staff","staff-demo");
+  const all=await (await staff.request("/api/contacts")).json();
   assert.equal(all.contacts.length,2);
-  const found=await (await fetch(base+"/api/contacts?q=ALEX")).json();
+  const found=await (await staff.request("/api/contacts?q=ALEX")).json();
   assert.equal(found.contacts[0].id,"C101");
 }));
 
@@ -81,12 +82,12 @@ test("rejects writes when logged out", async () => withServer(async ({base}) => 
   assert.equal(response.status,401);
 }));
 
-test("archive retains the record and creates an audit entry", async () => withServer(async ({login,base,auditFile}) => {
+test("archive retains the record and creates an audit entry", async () => withServer(async ({login,auditFile}) => {
   const staff=await login("staff","staff-demo");
   const archived=await staff.request("/api/contacts/C101/archive",{method:"POST"});
   assert.equal(archived.status,200);
-  const active=await (await fetch(base+"/api/contacts")).json();
-  const hidden=await (await fetch(base+"/api/contacts?archived=true")).json();
+  const active=await (await staff.request("/api/contacts")).json();
+  const hidden=await (await staff.request("/api/contacts?archived=true")).json();
   assert.equal(active.contacts.length,1);
   assert.equal(hidden.contacts.length,1);
   assert.equal(hidden.contacts[0].id,"C101");
@@ -95,8 +96,9 @@ test("archive retains the record and creates an audit entry", async () => withSe
   assert.equal(logs.at(-1).contact_id,"C101");
 }));
 
-test("households endpoint returns seeded household data", async () => withServer(async ({base}) => {
-  const data=await (await fetch(base+"/api/households")).json();
+test("households endpoint returns seeded household data", async () => withServer(async ({login}) => {
+  const staff=await login("staff","staff-demo");
+  const data=await (await staff.request("/api/households")).json();
   assert.equal(data.households[0].id,"H101");
 }));
 
@@ -165,8 +167,8 @@ test("archives classroom contact C130 while retaining all 30 records", async () 
     const cookie=loginResponse.headers.get("set-cookie").split(";")[0];
     const archived=await fetch(base+"/api/contacts/C130/archive",{method:"POST",headers:{Cookie:cookie}});
     assert.equal(archived.status,200);
-    const active=await (await fetch(base+"/api/contacts")).json();
-    const archivedList=await (await fetch(base+"/api/contacts?archived=true")).json();
+    const active=await (await fetch(base+"/api/contacts",{headers:{Cookie:cookie}})).json();
+    const archivedList=await (await fetch(base+"/api/contacts?archived=true",{headers:{Cookie:cookie}})).json();
     assert.equal(active.contacts.length,29);
     assert.equal(archivedList.contacts.length,1);
     assert.equal(archivedList.contacts[0].id,"C130");
@@ -193,7 +195,9 @@ test("saved contacts persist when the server restarts without reseeding", async 
     await new Promise(resolve=>server.close(resolve));
     server=createServer({dataFile,householdsFile,auditFile,usersFile,settingsFile,sessions:new Map()});
     const restarted=await listen();
-    const contacts=(await (await fetch(restarted+"/api/contacts?q=Persists%20after%20restart")).json()).contacts;
+    const restartedLogin=await fetch(restarted+"/api/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"staff",password:"staff-demo"})});
+    const restartedCookie=restartedLogin.headers.get("set-cookie").split(";")[0];
+    const contacts=(await (await fetch(restarted+"/api/contacts?q=Persists%20after%20restart",{headers:{Cookie:restartedCookie}})).json()).contacts;
     assert.equal(contacts.length,1);
     assert.equal(contacts[0].name,"Persists after restart");
   } finally {
