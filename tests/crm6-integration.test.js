@@ -61,7 +61,12 @@ test("campaign file includes gifts and duplicate file keys do not create duplica
  const file=(await first.json()).file;assert.equal(file.content.gifts.length,1);assert.equal(file.content.total,75);
  const second=await staff("/api/campaign-downloads",{method:"POST",body:json(body)});assert.equal(second.status,200);assert.equal((await second.json()).idempotent,true);
  assert.equal(JSON.parse(fs.readFileSync(files.campaignFilesFile,"utf8")).length,1);
- const summary=await (await staff("/api/workspace-summary")).json();assert.equal(summary.campaign_files.count,1);
+ const gift=(await (await staff("/api/donations")).json()).donations[0];
+ await staff("/api/donations/"+gift.id+"/cancel",{method:"POST",body:json({reason:"test"})});
+ const changed=await staff("/api/campaign-downloads",{method:"POST",body:json({campaign_id:event.id,file_key:"campaign:"+event.id+":D1:cancelled"})});
+ assert.equal(changed.status,201);const cancelledFile=(await changed.json()).file;assert.equal(cancelledFile.content.gifts[0].status,"cancelled");assert.equal(cancelledFile.content.received_total,0);
+ assert.equal(JSON.parse(fs.readFileSync(files.campaignFilesFile,"utf8")).length,2);
+ const summary=await (await staff("/api/workspace-summary")).json();assert.equal(summary.campaign_files.count,2);
 }));
 
 test("admin backup exports required linked data and restores a separate copy without changing live data",async()=>setup(async({login,files})=>{
