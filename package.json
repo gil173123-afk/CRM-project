@@ -2,7 +2,7 @@
   "name": "crm-project",
   "version": "1.0.0",
   "private": true,
-  "description": "CRM classroom project: contacts, memberships, donations, events and tasks",
+  "description": "CRM classroom app: contacts, memberships, donations, events, tasks, audit history and backups",
   "scripts": {
     "start": "node server.js",
     "test": "node --test",
