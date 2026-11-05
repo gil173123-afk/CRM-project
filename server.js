@@ -15,6 +15,8 @@ const DEFAULT_PLANS_FILE = path.join(ROOT, "data", "membership-plans.json");
 const DEFAULT_DONATIONS_FILE = path.join(ROOT, "data", "donations.json");
 const DEFAULT_EVENTS_FILE = path.join(ROOT, "data", "fundraising-events.json");
 const DEFAULT_TASKS_FILE = path.join(ROOT, "data", "tasks.json");
+const DEFAULT_CAMPAIGN_FILES_FILE = path.join(ROOT, "data", "campaign-files.json");
+const DEFAULT_RESTORES_DIR = path.join(ROOT, "data", "restores");
 const MIME = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json; charset=utf-8", ".svg": "image/svg+xml" };
 const DEMO_USERS = [
   { id: "admin-demo", username: "admin", password: "admin-demo", role: "admin" },
@@ -75,6 +77,8 @@ function createServer(options = {}) {
   const donationsFile = options.donationsFile || DEFAULT_DONATIONS_FILE;
   const eventsFile = options.eventsFile || DEFAULT_EVENTS_FILE;
   const tasksFile = options.tasksFile || DEFAULT_TASKS_FILE;
+  const campaignFilesFile = options.campaignFilesFile || DEFAULT_CAMPAIGN_FILES_FILE;
+  const restoresDir = options.restoresDir || DEFAULT_RESTORES_DIR;
   const userSessions = options.sessions || sessions;
   function currentUser(req) {
     const cookie = (req.headers.cookie || "").split(";").map(v => v.trim()).find(v => v.startsWith("crm_session="));
@@ -463,6 +467,69 @@ function createServer(options = {}) {
         const settings = { organization_name: organization_name.slice(0, 120), default_email_opt_in: body.default_email_opt_in === true };
         writeArray(settingsFile, [settings]); audit(user, "settings", "update-settings");
         return sendJson(res, 200, { settings });
+      }
+
+      if (url.pathname === "/api/workspace-summary" && req.method === "GET") {
+        const user=requireUser(req,res); if(!user)return;
+        const asOf=url.searchParams.get("as_of")||"2026-10-15";
+        if(!validDate(asOf))return sendJson(res,400,{error:"As of must be a real calendar date."});
+        const contacts=readContacts(dataFile), memberships=membershipDashboard(asOf), donations=readArray(donationsFile), tasks=readArray(tasksFile);
+        const received=donations.filter(d=>d.status==="received"),month=asOf.slice(0,7);
+        return sendJson(res,200,{as_of:asOf,contacts:{active:contacts.filter(c=>!c.archived).length,archived:contacts.filter(c=>c.archived).length},memberships:memberships.counts,donations:{received_total:received.reduce((n,d)=>n+Number(d.amount||0),0),received_count:received.length,month_total:received.filter(d=>String(d.date).startsWith(month)).reduce((n,d)=>n+Number(d.amount||0),0)},tasks:{open:tasks.filter(t=>["open","in_progress"].includes(t.status)).length,completed:tasks.filter(t=>t.status==="completed").length}});
+      }
+      const historyMatch=url.pathname.match(/^\/api\/records\/([^/]+)\/history$/);
+      if(historyMatch&&req.method==="GET"){
+        const user=requireUser(req,res);if(!user)return;
+        const id=decodeURIComponent(historyMatch[1]),entries=readArray(auditFile).filter(e=>[e.contact_id,e.membership_id,e.record_id,e.payment_id].includes(id));
+        return sendJson(res,200,{record_id:id,entries:entries.sort((a,b)=>String(a.timestamp).localeCompare(String(b.timestamp)))});
+      }
+      const cancelGiftMatch=url.pathname.match(/^\/api\/donations\/([^/]+)\/cancel$/);
+      if(cancelGiftMatch&&req.method==="POST"){
+        const user=requireUser(req,res);if(!user)return;if(!requireRole(user,["admin","staff"],res))return;
+        const id=decodeURIComponent(cancelGiftMatch[1]),items=readArray(donationsFile),index=items.findIndex(d=>d.id===id);
+        if(index<0)return sendJson(res,404,{error:"Donation not found."});
+        if(items[index].status==="cancelled")return sendJson(res,200,{donation:items[index],idempotent:true});
+        const body=await readBody(req);
+        items[index]={...items[index],status:"cancelled",cancelled_by:user.id,cancelled_at:new Date().toISOString(),cancel_reason:cleanString(body.reason)};
+        writeArray(donationsFile,items);auditMembership(user,id,"cancel-donation");
+        return sendJson(res,200,{donation:items[index]});
+      }
+      if(url.pathname==="/api/campaign-downloads"&&req.method==="POST"){
+        const user=requireUser(req,res);if(!user)return;if(!requireRole(user,["admin","staff"],res))return;
+        const body=await readBody(req),campaignId=cleanString(body.campaign_id),fileKey=cleanString(body.file_key);
+        if(!campaignId||!fileKey)return sendJson(res,400,{error:"Campaign ID and unique file key are required."});
+        const files=readArray(campaignFilesFile),prior=files.find(f=>f.file_key.toLowerCase()===fileKey.toLowerCase());
+        if(prior)return sendJson(res,200,{file:prior,idempotent:true});
+        const event=readArray(eventsFile).find(e=>e.id===campaignId);
+        if(!event)return sendJson(res,404,{error:"Campaign not found."});
+        const gifts=readArray(donationsFile).filter(d=>d.event_id===campaignId&&d.status==="received");
+        const generated=new Date().toISOString(),payload={campaign:event,generated_at:generated,gifts,total:gifts.reduce((n,d)=>n+Number(d.amount||0),0)};
+        const file={id:"F-"+crypto.randomUUID(),campaign_id:campaignId,file_key:fileKey,file_name:(event.name.replace(/[^a-z0-9_-]+/gi,"-").toLowerCase()||"campaign")+"-giving.json",content:payload,created_by:user.id,created_at:generated};
+        files.push(file);writeArray(campaignFilesFile,files);auditMembership(user,file.id,"create-campaign-file");
+        return sendJson(res,201,{file});
+      }
+      if(url.pathname==="/api/campaign-files"&&req.method==="GET"){
+        const user=requireUser(req,res);if(!user)return;
+        return sendJson(res,200,{files:readArray(campaignFilesFile).map(({content,...f})=>f)});
+      }
+      if(url.pathname==="/api/backup"&&req.method==="GET"){
+        const user=requireUser(req,res);if(!user)return;if(!requireRole(user,["admin"],res))return;
+        const datasets={contacts:readArray(dataFile),households:readArray(householdsFile),memberships:readArray(membershipsFile),payments:readArray(paymentsFile),membership_plans:readArray(plansFile),donations:readArray(donationsFile),fundraising_events:readArray(eventsFile),tasks:readArray(tasksFile),audit_history:readArray(auditFile),campaign_files:readArray(campaignFilesFile),settings:readArray(settingsFile),users:readArray(usersFile)};
+        return sendJson(res,200,{format:"north-star-crm-backup",version:1,exported_at:new Date().toISOString(),datasets});
+      }
+      if(url.pathname==="/api/backup/restore-copy"&&req.method==="POST"){
+        const user=requireUser(req,res);if(!user)return;if(!requireRole(user,["admin"],res))return;
+        const body=await readBody(req),d=body.datasets;
+        const required=["contacts","households","memberships","payments","membership_plans","donations","fundraising_events","tasks","audit_history"];
+        if(body.format!=="north-star-crm-backup"||!d||required.some(k=>!Array.isArray(d[k])))return sendJson(res,400,{error:"Backup is incomplete or has an unsupported format."});
+        const stamp=new Date().toISOString().replace(/[:.]/g,"-"),target=path.join(restoresDir,"restore-"+stamp);
+        const names={contacts:"contacts.json",households:"households.json",memberships:"memberships.json",payments:"payments.json",membership_plans:"membership-plans.json",donations:"donations.json",fundraising_events:"fundraising-events.json",tasks:"tasks.json",audit_history:"audit-log.json",campaign_files:"campaign-files.json",settings:"settings.json",users:"users.json"};
+        fs.mkdirSync(target,{recursive:true});
+        for(const [key,name] of Object.entries(names))writeArray(path.join(target,name),Array.isArray(d[key])?d[key]:[]);
+        const manifest={format:body.format,version:body.version,source_exported_at:body.exported_at,restored_at:new Date().toISOString(),restored_by:user.id,files:Object.values(names)};
+        fs.writeFileSync(path.join(target,"restore-manifest.json"),JSON.stringify(manifest,null,2)+"\n");
+        audit(user,"backup:"+path.basename(target),"restore-backup-copy");
+        return sendJson(res,201,{restored:true,original_data_changed:false,copy_location:"data/restores/"+path.basename(target),manifest});
       }
       if (req.method !== "GET" && req.method !== "HEAD") return sendJson(res, 405, { error: "Method not allowed." });
       const requested = url.pathname === "/" ? "/index.html" : url.pathname;
