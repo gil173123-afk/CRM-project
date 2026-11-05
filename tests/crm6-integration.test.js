@@ -61,6 +61,7 @@ test("campaign file includes gifts and duplicate file keys do not create duplica
  const file=(await first.json()).file;assert.equal(file.content.gifts.length,1);assert.equal(file.content.total,75);
  const second=await staff("/api/campaign-downloads",{method:"POST",body:json(body)});assert.equal(second.status,200);assert.equal((await second.json()).idempotent,true);
  assert.equal(JSON.parse(fs.readFileSync(files.campaignFilesFile,"utf8")).length,1);
+ const summary=await (await staff("/api/workspace-summary")).json();assert.equal(summary.campaign_files.count,1);
 }));
 
 test("admin backup exports required linked data and restores a separate copy without changing live data",async()=>setup(async({login,files})=>{
@@ -95,3 +96,32 @@ test("startup seed is opt-in and test fixture contains stable CRM relationships"
  assert.equal(fixture.households.length,5);
  assert.ok(fixture.memberships.every(m=>m.contact_id));
 });
+
+
+test("viewer cannot change contacts, membership periods, donations or tasks",async()=>setup(async({login,files})=>{
+ const staff=await login("staff","staff-demo");
+ const contact=(await staff("/api/contacts",{method:"POST",body:json({name:"CRM6 Permission Contact",email:"crm6-permission@example.org"})}));assert.equal(contact.status,201);
+ const event=(await (await staff("/api/fundraising-events",{method:"POST",body:json({name:"Permission Campaign",date:"2026-10-15",goal:100})})).json()).event;
+ const gift=(await (await staff("/api/donations",{method:"POST",body:json({contact_id:"C101",event_id:event.id,amount:15,date:"2026-10-15",status:"received",reference:"PERMISSION-GIFT"})})).json()).donation;
+ const task=(await (await staff("/api/tasks",{method:"POST",body:json({title:"Thank donor",contact_id:"C101",donation_id:gift.id,followup_key:"permission-thank-you"})})).json()).task;
+ const membership=(await (await staff("/api/memberships",{method:"POST",body:json({contact_id:"C130",plan:"individual",amount:35,start_date:"2026-10-15",payment_date:"2026-10-15",method:"cash",payment_status:"paid",payment_code:"PERMISSION-MEMBER"})})).json()).membership;
+ const viewer=await login("viewer","viewer-demo");
+ assert.equal((await viewer("/api/contacts/"+contact.id,{method:"PUT",body:json({id:contact.id,name:"Should not save",email:"crm6-permission@example.org"})})).status,403);
+ assert.equal((await viewer("/api/memberships/"+membership.id+"/renew",{method:"POST",body:json({amount:35,date:"2026-10-15",status:"paid",payment_code:"VIEWER-RENEW"})})).status,403);
+ assert.equal((await viewer("/api/donations/"+gift.id+"/cancel",{method:"POST",body:json({reason:"not allowed"})})).status,403);
+ assert.equal((await viewer("/api/tasks/"+task.id,{method:"PUT",body:json({status:"completed"})})).status,403);
+ assert.equal(JSON.parse(fs.readFileSync(files.dataFile,"utf8")).find(c=>c.id===contact.id).name,"CRM6 Permission Contact");
+ assert.equal(JSON.parse(fs.readFileSync(files.donationsFile,"utf8")).find(d=>d.id===gift.id).status,"received");
+ assert.equal(JSON.parse(fs.readFileSync(files.tasksFile,"utf8")).find(t=>t.id===task.id).status,"open");
+ assert.equal(JSON.parse(fs.readFileSync(files.membershipsFile,"utf8")).find(m=>m.id===membership.id).periods.length,1);
+}));
+
+test("archiving a contact preserves its identity and linked donation history",async()=>setup(async({login,files})=>{
+ const staff=await login("staff","staff-demo");
+ const event=(await (await staff("/api/fundraising-events",{method:"POST",body:json({name:"Archive Link",date:"2026-10-15",goal:20})})).json()).event;
+ const gift=(await (await staff("/api/donations",{method:"POST",body:json({contact_id:"C101",event_id:event.id,amount:10,date:"2026-10-15",status:"received",reference:"ARCHIVE-LINK-GIFT"})})).json()).donation;
+ const archived=await staff("/api/contacts/C101/archive",{method:"POST",body:json({})});assert.equal(archived.status,200);
+ const contact=JSON.parse(fs.readFileSync(files.dataFile,"utf8")).find(c=>c.id==="C101");assert.equal(contact.archived,true);
+ assert.equal(JSON.parse(fs.readFileSync(files.donationsFile,"utf8")).find(d=>d.id===gift.id).contact_id,"C101");
+ const history=await (await staff("/api/records/C101/history")).json();assert.ok(history.entries.some(e=>e.action==="archive"));
+}));
