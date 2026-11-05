@@ -514,7 +514,7 @@ function createServer(options = {}) {
       }
       if(url.pathname==="/api/backup"&&req.method==="GET"){
         const user=requireUser(req,res);if(!user)return;if(!requireRole(user,["admin"],res))return;
-        const datasets={contacts:readArray(dataFile),households:readArray(householdsFile),memberships:readArray(membershipsFile),payments:readArray(paymentsFile),membership_plans:readArray(plansFile),donations:readArray(donationsFile),fundraising_events:readArray(eventsFile),tasks:readArray(tasksFile),audit_history:readArray(auditFile),campaign_files:readArray(campaignFilesFile),settings:readArray(settingsFile),users:readArray(usersFile)};
+        const datasets={contacts:readArray(dataFile),households:readArray(householdsFile),memberships:readArray(membershipsFile),payments:readArray(paymentsFile),membership_plans:readArray(plansFile),donations:readArray(donationsFile),fundraising_events:readArray(eventsFile),tasks:readArray(tasksFile),audit_history:readArray(auditFile),campaign_files:readArray(campaignFilesFile),settings:readArray(settingsFile)};
         return sendJson(res,200,{format:"north-star-crm-backup",version:1,exported_at:new Date().toISOString(),datasets});
       }
       if(url.pathname==="/api/backup/restore-copy"&&req.method==="POST"){
@@ -523,7 +523,7 @@ function createServer(options = {}) {
         const required=["contacts","households","memberships","payments","membership_plans","donations","fundraising_events","tasks","audit_history"];
         if(body.format!=="north-star-crm-backup"||!d||required.some(k=>!Array.isArray(d[k])))return sendJson(res,400,{error:"Backup is incomplete or has an unsupported format."});
         const stamp=new Date().toISOString().replace(/[:.]/g,"-"),target=path.join(restoresDir,"restore-"+stamp);
-        const names={contacts:"contacts.json",households:"households.json",memberships:"memberships.json",payments:"payments.json",membership_plans:"membership-plans.json",donations:"donations.json",fundraising_events:"fundraising-events.json",tasks:"tasks.json",audit_history:"audit-log.json",campaign_files:"campaign-files.json",settings:"settings.json",users:"users.json"};
+        const names={contacts:"contacts.json",households:"households.json",memberships:"memberships.json",payments:"payments.json",membership_plans:"membership-plans.json",donations:"donations.json",fundraising_events:"fundraising-events.json",tasks:"tasks.json",audit_history:"audit-log.json",campaign_files:"campaign-files.json",settings:"settings.json"};
         fs.mkdirSync(target,{recursive:true});
         for(const [key,name] of Object.entries(names))writeArray(path.join(target,name),Array.isArray(d[key])?d[key]:[]);
         const manifest={format:body.format,version:body.version,source_exported_at:body.exported_at,restored_at:new Date().toISOString(),restored_by:user.id,files:Object.values(names)};
