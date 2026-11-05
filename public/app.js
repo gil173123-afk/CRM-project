@@ -55,7 +55,7 @@ async function loadWorkspaceSummary(){
  try{
   const r=await fetch("/api/workspace-summary?as_of="+encodeURIComponent(asOf)),d=await r.json();if(!r.ok)throw new Error(d.error||"Could not load report.");
   const m=d.memberships,don=d.donations,t=d.tasks;
-  const cards=[["Active contacts",d.contacts.active],["Archived contacts",d.contacts.archived],["Active memberships",m.active_memberships],["People covered",m.covered_people],["Received gifts","$"+Number(don.received_total).toFixed(2)],["Gifts this month","$"+Number(don.month_total).toFixed(2)],["Open tasks",t.open],["Completed tasks",t.completed],["Campaign files",d.campaign_files.count]];
+  const cards=[["Active contacts",d.contacts.active],["Archived contacts",d.contacts.archived],["Active memberships",m.active_memberships],["Expiring memberships",m.expiring_memberships],["Expired memberships",m.expired_memberships],["People covered",m.covered_people],["Received gifts","$"+Number(don.received_total).toFixed(2)],["Gifts this month","$"+Number(don.month_total).toFixed(2)],["Open tasks",t.open],["Completed tasks",t.completed],["Campaign files",d.campaign_files.count]];
   const render=container=>{if(!container)return;container.replaceChildren();cards.forEach(([label,value])=>{const card=el("article");card.className="stat-card";card.append(el("span",label),el("strong",String(value)));container.append(card);});};
   render(document.querySelector("#dashboard-stats"));render(document.querySelector("#report-results"));
  }catch(e){announce(e.message);}
