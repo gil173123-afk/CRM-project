@@ -540,7 +540,7 @@ function createServer(options = {}) {
       if(url.pathname==="/api/backup/restore-copy"&&req.method==="POST"){
         const user=requireUser(req,res);if(!user)return;if(!requireRole(user,["admin"],res))return;
         const body=await readBody(req),d=body.datasets;
-        const required=["contacts","households","memberships","payments","membership_plans","donations","fundraising_events","tasks","audit_history"];
+        const required=["contacts","households","memberships","payments","membership_plans","donations","fundraising_events","tasks","audit_history","campaign_files","settings"];
         if(body.format!=="north-star-crm-backup"||!d||required.some(k=>!Array.isArray(d[k])))return sendJson(res,400,{error:"Backup is incomplete or has an unsupported format."});
         const stamp=new Date().toISOString().replace(/[:.]/g,"-"),target=path.join(restoresDir,"restore-"+stamp);
         const names={contacts:"contacts.json",households:"households.json",memberships:"memberships.json",payments:"payments.json",membership_plans:"membership-plans.json",donations:"donations.json",fundraising_events:"fundraising-events.json",tasks:"tasks.json",audit_history:"audit-log.json",campaign_files:"campaign-files.json",settings:"settings.json"};
