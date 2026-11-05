@@ -503,8 +503,9 @@ function createServer(options = {}) {
         if(prior)return sendJson(res,200,{file:prior,idempotent:true});
         const event=readArray(eventsFile).find(e=>e.id===campaignId);
         if(!event)return sendJson(res,404,{error:"Campaign not found."});
-        const gifts=readArray(donationsFile).filter(d=>d.event_id===campaignId&&d.status==="received");
-        const generated=new Date().toISOString(),payload={campaign:event,generated_at:generated,gifts,total:gifts.reduce((n,d)=>n+Number(d.amount||0),0)};
+        const gifts=readArray(donationsFile).filter(d=>d.event_id===campaignId);
+        const receivedGifts=gifts.filter(d=>d.status==="received");
+        const generated=new Date().toISOString(),payload={campaign:event,generated_at:generated,gifts,received_total:receivedGifts.reduce((n,d)=>n+Number(d.amount||0),0)};
         const file={id:"F-"+crypto.randomUUID(),campaign_id:campaignId,file_key:fileKey,file_name:(event.name.replace(/[^a-z0-9_-]+/gi,"-").toLowerCase()||"campaign")+"-giving.json",content:payload,created_by:user.id,created_at:generated};
         files.push(file);writeArray(campaignFilesFile,files);auditMembership(user,file.id,"create-campaign-file");
         return sendJson(res,201,{file});
