@@ -1,0 +1,10 @@
+CRM 6 test output
+
+Command: npm test
+Branch: crm6-integrated-workflows-backup-responsive
+Status: awaiting GitHub Actions on the pull request. This file is not a fabricated passing transcript.
+
+Automated test file: tests/crm6-integration.test.js
+Coverage: shared summary, gift cancellation and audit history, campaign file idempotency, complete backup and separate-copy restore, viewer permissions and fixture counts.
+
+Manual October 15, 2026 end-to-end practice workflow, mobile/keyboard checks and demo evidence: not yet executed; see tests/crm6-tests.md.
