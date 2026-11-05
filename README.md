@@ -5,17 +5,18 @@ A dependency-free Node.js CRM classroom project covering contacts, memberships, 
 ## Requirements
 - Node.js 20 or newer
 
-## Run the app
+## Install and run the app
 ```sh
+npm install
 npm start
 ```
 Open http://localhost:3000.
 
 ## Load classroom data
 ```sh
-npm run seed -- contacts households
+npm run seed -- all
 ```
-This resets `data/contacts.json` and `data/households.json` using `data/crm-classroom-test-data.json`. It overwrites local changes to those files.
+This intentionally resets the fake classroom baseline across contacts, households, memberships, events, donations, tasks, payments, audit history and campaign-file records using `data/crm-classroom-test-data.json`. It overwrites selected local data files. Do not run it after entering work you want to keep. Running `npm start` never seeds or resets data.
 
 ## Run automated tests
 ```sh
@@ -96,7 +97,7 @@ The test suite includes `tests/crm3-memberships.test.js`. See `tests/crm3-tests.
 - Campaign download files include the campaign and its received gifts. The stable file key makes a repeated download request idempotent; a changed gift set produces a new file version.
 - Contacts, memberships, payments, donations, events, tasks and campaign files retain IDs and links. Record history is available by record ID; archive/cancel actions preserve the original record and append audit entries.
 - Admin, staff and viewer permissions are enforced on the server. Viewers can read workspace data but cannot write. Only admins can export or restore backups.
-- Admins can download a full JSON backup containing contacts, households, memberships and periods, payments, donations, fundraising events, tasks, audit history, campaign files, settings and user records. Restore writes a separate copy under data/restores/ and does not replace live files.
+- Admins can download a full JSON backup containing contacts, households, memberships and periods, payments, donations, fundraising events, tasks, audit history, campaign files and settings. Login credentials are intentionally excluded from backup files. Restore writes a separate copy under data/restores/ and does not replace live files.
 - Layout refinements support phone and laptop widths, independently scrollable data tables, visible keyboard focus and labelled controls.
 
 ### Install, load, start and test
@@ -106,7 +107,7 @@ Node.js 20 or newer is required. This project has no third-party runtime depende
     npm run seed -- all   # optional: resets the fake classroom baseline
     npm start
 
-Open http://localhost:3000. Run npm test to execute the automated suite. After entering project work, restart with npm start only; do not reseed. After entering project work, restart with npm start only; do not reseed.
+Open http://localhost:3000. Run npm test to execute the automated suite. After entering project work, restart with `npm start` only; do not reseed.
 
 ### Backup and restore
 Sign in as admin, open Settings, choose Download full backup. To restore, select the JSON file and choose Restore into separate copy. The restore creates a timestamped directory and manifest under data/restores/; live data remains unchanged.
