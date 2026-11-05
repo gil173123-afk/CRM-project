@@ -16,6 +16,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Check JavaScript syntax
+        run: node --check server.js && node --check public/app.js && node --check scripts/seed.js
       - name: Run automated tests
         run: npm test
       - name: Check seed fixture counts
