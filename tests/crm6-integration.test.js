@@ -58,7 +58,7 @@ test("campaign file includes gifts and duplicate file keys do not create duplica
  await staff("/api/donations",{method:"POST",body:json({contact_id:"C101",event_id:event.id,amount:75,date:"2026-10-15",status:"received",reference:"CAMPAIGN-GIFT-1"})});
  const body={campaign_id:event.id,file_key:"campaign:"+event.id+":D1"};
  const first=await staff("/api/campaign-downloads",{method:"POST",body:json(body)});assert.equal(first.status,201);
- const file=(await first.json()).file;assert.equal(file.content.gifts.length,1);assert.equal(file.content.total,75);
+ const file=(await first.json()).file;assert.equal(file.content.gifts.length,1);assert.equal(file.content.received_total,75);
  const second=await staff("/api/campaign-downloads",{method:"POST",body:json(body)});assert.equal(second.status,200);assert.equal((await second.json()).idempotent,true);
  assert.equal(JSON.parse(fs.readFileSync(files.campaignFilesFile,"utf8")).length,1);
  const gift=(await (await staff("/api/donations")).json()).donations[0];
@@ -79,7 +79,7 @@ test("admin backup exports required linked data and restores a separate copy wit
  fs.writeFileSync(files.tasksFile,JSON.stringify([{id:"T-KEEP",contact_id:"C-KEEP",donation_id:"D-KEEP"}]));
  fs.writeFileSync(files.auditFile,JSON.stringify([{record_id:"C-KEEP",action:"create",actor:"staff",timestamp:"2026-10-15T00:00:00.000Z"}]));
  const backupResponse=await admin("/api/backup");assert.equal(backupResponse.status,200);const backup=await backupResponse.json();
- for(const key of ["contacts","households","memberships","payments","donations","tasks","audit_history"])assert.ok(Array.isArray(backup.datasets[key]),key);
+ for(const key of ["contacts","households","memberships","payments","membership_plans","donations","fundraising_events","tasks","audit_history","campaign_files","settings"])assert.ok(Array.isArray(backup.datasets[key]),key);
  const restored=await admin("/api/backup/restore-copy",{method:"POST",body:json(backup)});assert.equal(restored.status,201);const result=await restored.json();assert.equal(result.original_data_changed,false);
  const copy=path.join(files.restoresDir,path.basename(result.copy_location));
  assert.equal(JSON.parse(fs.readFileSync(path.join(copy,"contacts.json"),"utf8"))[0].id,"C-KEEP");
@@ -105,7 +105,7 @@ test("startup seed is opt-in and test fixture contains stable CRM relationships"
 
 test("viewer cannot change contacts, membership periods, donations or tasks",async()=>setup(async({login,files})=>{
  const staff=await login("staff","staff-demo");
- const contact=(await staff("/api/contacts",{method:"POST",body:json({name:"CRM6 Permission Contact",email:"crm6-permission@example.org"})}));assert.equal(contact.status,201);
+ const contactResponse=await staff("/api/contacts",{method:"POST",body:json({name:"CRM6 Permission Contact",email:"crm6-permission@example.org"})});assert.equal(contactResponse.status,201);const contact=(await contactResponse.json()).contact;
  const event=(await (await staff("/api/fundraising-events",{method:"POST",body:json({name:"Permission Campaign",date:"2026-10-15",goal:100})})).json()).event;
  const gift=(await (await staff("/api/donations",{method:"POST",body:json({contact_id:"C101",event_id:event.id,amount:15,date:"2026-10-15",status:"received",reference:"PERMISSION-GIFT"})})).json()).donation;
  const task=(await (await staff("/api/tasks",{method:"POST",body:json({title:"Thank donor",contact_id:"C101",donation_id:gift.id,followup_key:"permission-thank-you"})})).json()).task;
@@ -151,4 +151,12 @@ test("contact, membership, renewal, gift and thank-you task survive a server res
  const memberships=await (await staff("/api/memberships?as_of=2026-10-15")).json();assert.equal(memberships.memberships.find(m=>m.id===membership.id).periods.length,2);
  const gifts=await (await staff("/api/donations")).json();assert.ok(gifts.donations.some(d=>d.id===gift.id&&d.membership_id===membership.id));
  const tasks=await (await staff("/api/tasks")).json();assert.ok(tasks.tasks.some(t=>t.id===task.id&&t.status==="completed"));
+}));
+
+
+test("all CRM record read endpoints require a signed-in role",async()=>setup(async({base,login})=>{
+ const endpoints=["/api/contacts","/api/households","/api/memberships","/api/membership-plans","/api/donations","/api/fundraising-events","/api/tasks","/api/workspace-summary"];
+ for(const endpoint of endpoints){const response=await fetch(base+endpoint);assert.equal(response.status,401,endpoint+" must reject anonymous reads");}
+ const viewer=await login("viewer","viewer-demo");
+ for(const endpoint of endpoints){const response=await viewer(endpoint);assert.equal(response.status,200,endpoint+" should allow viewer reads");}
 }));

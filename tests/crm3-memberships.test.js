@@ -40,15 +40,16 @@ async function withMembershipServer(run) {
   finally { await new Promise(resolve=>server.close(resolve)); fs.rmSync(folder,{recursive:true,force:true}); }
 }
 
-test("CRM 3 baseline status lists and counts match the classroom fixture",async()=>withMembershipServer(async({base})=>{
-  const response=await fetch(base+"/api/memberships?as_of=2026-10-15");
+test("CRM 3 baseline status lists and counts match the classroom fixture",async()=>withMembershipServer(async({login})=>{
+  const staff=await login("staff","staff-demo");
+  const response=await staff.request("/api/memberships?as_of=2026-10-15");
   assert.equal(response.status,200);
   const data=await response.json();
   assert.equal(data.memberships.length,20);
   assert.deepEqual(data.counts,{paid_memberships:12,active_memberships:12,expiring_memberships:6,expired_memberships:4,pending_memberships:4,covered_people:14});
 }));
 
-test("early renewal preserves paid time, adds one year, and duplicate code is idempotent",async()=>withMembershipServer(async({login,base,files})=>{
+test("early renewal preserves paid time, adds one year, and duplicate code is idempotent",async()=>withMembershipServer(async({login,files})=>{
   const staff=await login("staff","staff-demo");
   const body={amount:40,date:"2026-10-15",method:"cash",status:"paid",payment_code:"R-M101-01"};
   const first=await staff.request("/api/memberships/M101/renew",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
@@ -59,7 +60,7 @@ test("early renewal preserves paid time, adds one year, and duplicate code is id
   const retry=await staff.request("/api/memberships/M101/renew",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});
   assert.equal(retry.status,200);
   assert.equal((await retry.json()).idempotent,true);
-  const dashboard=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
+  const dashboard=await (await staff.request("/api/memberships?as_of=2026-10-15")).json();
   assert.equal(dashboard.counts.active_memberships,12);
   assert.equal(dashboard.counts.covered_people,14);
   assert.equal(dashboard.counts.expiring_memberships,5);
@@ -86,7 +87,7 @@ test("date rules handle leap day and reject impossible dates",async()=>withMembe
   assert.equal(invalid.status,400);
 }));
 
-test("admin alone changes plan prices and old saved membership prices stay unchanged",async()=>withMembershipServer(async({login,base})=>{
+test("admin alone changes plan prices and old saved membership prices stay unchanged",async()=>withMembershipServer(async({login})=>{
   const staff=await login("staff","staff-demo");
   const denied=await staff.request("/api/membership-plans",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({plans:[]})});
   assert.equal(denied.status,403);
@@ -94,7 +95,7 @@ test("admin alone changes plan prices and old saved membership prices stay uncha
   const plans=[{id:"individual",price:35,duration_years:1},{id:"family",price:50,duration_years:1},{id:"student_senior",price:30,duration_years:1}];
   const saved=await admin.request("/api/membership-plans",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({plans})});
   assert.equal(saved.status,200);
-  const dashboard=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
+  const dashboard=await (await admin.request("/api/memberships?as_of=2026-10-15")).json();
   assert.equal(dashboard.memberships.find(m=>m.id==="M101").price,40);
 }));
 
@@ -117,23 +118,23 @@ test("late renewal starts on payment date and year-end dates add a calendar year
   assert.equal((await yearEnd.json()).membership.end_date,"2027-12-31");
 }));
 
-test("status boundary excludes 31 days, includes 30 days and expires on end date",async()=>withMembershipServer(async({base,login})=>{
+test("status boundary excludes 31 days, includes 30 days and expires on end date",async()=>withMembershipServer(async({login})=>{
   const staff=await login("staff","staff-demo");
   const created=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"C130",plan:"individual",amount:35,start_date:"2025-11-15",payment_date:"2025-11-15",method:"cash",payment_status:"paid",payment_code:"BOUNDARY-C130"})});
   assert.equal(created.status,201);
   const id=(await created.json()).membership.id;
-  const at31=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
+  const at31=await (await staff.request("/api/memberships?as_of=2026-10-15")).json();
   assert.equal(at31.memberships.find(m=>m.id===id).days_left,31);
   assert.equal(at31.memberships.find(m=>m.id===id).expiring,false);
-  const at30=await (await fetch(base+"/api/memberships?as_of=2026-10-16")).json();
+  const at30=await (await staff.request("/api/memberships?as_of=2026-10-16")).json();
   assert.equal(at30.memberships.find(m=>m.id===id).days_left,30);
   assert.equal(at30.memberships.find(m=>m.id===id).expiring,true);
-  const endReached=await (await fetch(base+"/api/memberships?as_of=2026-11-15")).json();
+  const endReached=await (await staff.request("/api/memberships?as_of=2026-11-15")).json();
   assert.equal(endReached.memberships.find(m=>m.id===id).status,"expired");
   assert.equal(endReached.memberships.find(m=>m.id===id).expiring,false);
 }));
 
-test("one family membership covers three household contacts",async()=>withMembershipServer(async({login,base,files})=>{
+test("one family membership covers three household contacts",async()=>withMembershipServer(async({login,files})=>{
   const contacts=JSON.parse(fs.readFileSync(files.dataFile,"utf8"));
   contacts.push({id:"C9001",name:"Family Person Two",email:"",household_id:"H900",archived:false});
   contacts.push({id:"C9002",name:"Family Person Three",email:"",household_id:"H900",archived:false});
@@ -145,7 +146,7 @@ test("one family membership covers three household contacts",async()=>withMember
   const created=await staff.request("/api/memberships",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({contact_id:"C130",household_id:"H900",plan:"family",amount:40,start_date:"2026-10-15",payment_date:"2026-10-15",method:"cash",payment_status:"paid",payment_code:"FAMILY-H900"})});
   assert.equal(created.status,201);
   const membership=(await created.json()).membership;
-  const dashboard=await (await fetch(base+"/api/memberships?as_of=2026-10-15")).json();
+  const dashboard=await (await staff.request("/api/memberships?as_of=2026-10-15")).json();
   assert.equal(dashboard.memberships.find(m=>m.id===membership.id).covered_people,3);
 }));
 
